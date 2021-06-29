@@ -8,7 +8,7 @@ npm install -g typescript; npm install; tsc;
 
 ## How it works
 
-EZForm's core mechanic relies on hooks. Each `Field` component registers its validator to the form object created by the `useForm` hook. This process takes places after the component has been mounted. In turn, when the component is unmounted, it automatically unregisters itself from the form. This means you can dynamically add and remove form fields and have more complex structured forms, without having to know how all fields look like in the form.
+EZForm's core mechanic relies on hooks. Each `Field` component registers its validator to the form object created by the `useForm` hook. This process takes place after the component has been mounted. In turn, when the component is unmounted, it automatically unregisters itself from the form. This means you can dynamically add and remove form fields and have more complex structured forms, without having to know how all fields look like in the form.
 
 When a `Field`s value changes, it will update the `field` state provided by the hook and validate that single field. If an error occurs, the error message will be stored in the `errors` state provided by the hook.
 
@@ -159,7 +159,7 @@ All EZForm needs to work, is for your component to:
 
 - accept a `name`, `form` and `validator` prop
 - call the `useValidator` hook and pass the `name`, `validator` and `form` as function arguments
-- implement a `handleChange` function which modifies the form field when the value changes. You are free on how you do it, but make sure to call `form.handleChange(name, value, validator);`. Notice that you need to pass the `name` and `validator` props to let EZForm know which field you are changing as well as the `value` to which you want you data to be saved.
+- implement a `handleChange` function which modifies the form field when the value changes. You are free on how you do it, but make sure to call `form.handleChange(name, value, validator);`. Notice that you need to pass the `name` and `validator` props to let EZForm know which field you are changing as well as the `value` of the form field.
 
 EZForm uses this technique internally to integrate Material UI's form fields. Take a look at the `FieldText` source for an easy example:
 
