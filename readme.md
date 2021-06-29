@@ -80,23 +80,33 @@ const onlyAllowVegans = (value: any) => {
 
 However, EZForm already comes with some basic validator functions that are ready to use:
 
-### defaultValidators.required
+### requiredValidator
 
 Checks if a field has a null value or an empty string value
 
-### defaultValidators.requiredList
+### requiredListValidator
 
 Checks if an array (such as a checkbox group or multiselect) is empty
 
-### defaultValidators.email
+### numberValidator
+
+Checks if a fields value is a number
+
+### emailValidator
 
 Checks if an email is formed correctly
 
+### urlValidator
+
+Checks if a URL is formed correctly
+
+Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new one and call the default validators yourself to mix and match.
+
 ## Components
 
-Currently, EZForm comes with many form fields based on Material UI form fields out of the box. It is, however, very easy to create your own components to use. Read more about it under "Creating your own Fields"
+Currently, EZForm comes with a the most basic form fields based on Material UI form fields. It is, however, very easy to create your own components to use. Read more about it under "Creating your own Fields". Also, I plan to add more and more customization options and new form components over time.
 
-### FieldBase
+### FieldBase interface
 
 This interface acts as a base for all field properties. All form components described below can take the following properties:
 
@@ -179,5 +189,3 @@ const FieldText = (props: FieldTextProps) => {
 	);
 };
 ````
-
-Pretty easy right?
