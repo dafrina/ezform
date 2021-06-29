@@ -12,7 +12,7 @@ const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 
 	useValidator(name, validator, form);
 
-	const handleChange = (option) => (e, value) => {
+	const handleChange = (option) => () => {
 		const newList = form.fields[name] || [];
 
 		const selected = form.fields?.[name]?.find((obj) => {

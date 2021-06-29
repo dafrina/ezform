@@ -1,18 +1,29 @@
 import { useState } from "react";
 
+export interface FormRefObject {
+	fields: any;
+	setFields: (f: any) => void;
+	errors: any;
+	setValidators: (f: any) => void;
+	handleChange: (name: string, value: any, validator?: (value: string) => string | null) => void;
+	submit: () => void;
+	hasError: (name: string) => boolean;
+	getHelperText: (name: string) => string | null;
+}
+
 const useForm = (onSubmit: (values: any) => void, initialState?: any = {}) => {
 	const [fields, setFields] = useState(initialState);
 	const [errors, setErrors] = useState({});
 	const [validators, setValidators] = useState({});
 
-	const hasError = (name: string) => {
+	const hasError = (name) => {
 		if (errors[name]) {
 			return true;
 		}
 		return false;
 	};
 
-	const getHelperText = (name: string) => {
+	const getHelperText = (name) => {
 		if (errors[name]) {
 			return errors[name];
 		}
@@ -44,11 +55,11 @@ const useForm = (onSubmit: (values: any) => void, initialState?: any = {}) => {
 		if (!hasErrors) {
 			onSubmit(fields);
 		} else {
-			console.log('Do not submit');
+			console.log("The form contains errors. Submit disabled");
 		}
 	};
 
-	const handleChange = (name: string, value: any, validator?: (value: string) => string | null) => {
+	const handleChange = (name, value, validator) => {
 		setFields((prev) => ({ ...prev, [name]: value }));
 
 		if (validator) {
@@ -67,7 +78,7 @@ const useForm = (onSubmit: (values: any) => void, initialState?: any = {}) => {
 		submit,
 		hasError,
 		getHelperText,
-	};
+	} as FormRefObject;
 };
 
 export default useForm;

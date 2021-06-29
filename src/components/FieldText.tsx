@@ -23,7 +23,7 @@ const FieldText = (props: FieldTextProps) => {
 			id={id}
 			label={label}
 			onChange={handleChange}
-			value={form.fields?.[name] || ''}
+			value={form.fields?.[name] || ""}
 			disabled={disabled}
 			error={form.hasError(name)}
 			helperText={form.getHelperText(name)}

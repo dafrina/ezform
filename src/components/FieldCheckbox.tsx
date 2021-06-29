@@ -20,7 +20,7 @@ const FieldCheckbox = (props: FieldBaseProps) => {
 						id={id}
 						disabled={disabled}
 						checked={form.fields?.[name] || false}
-						value={form.fields?.[name] || ''}
+						value={form.fields?.[name] || ""}
 						onChange={handleChange}
 						name={name}
 						color="primary"

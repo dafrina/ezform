@@ -27,10 +27,10 @@ const FieldDate = (props: FieldDateProps) => {
 				name={name}
 				id={id}
 				label={label}
-				value={form.fields?.[name] || ''}
+				value={form.fields?.[name] || ""}
 				onChange={handleChange}
 				KeyboardButtonProps={{
-					'aria-label': 'change date',
+					"aria-label": "change date",
 				}}
 				error={form.hasError(name)}
 				helperText={form.getHelperText(name)}

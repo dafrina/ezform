@@ -1,6 +1,7 @@
 import { useEffect } from "react";
+import { FormRefObject } from "./useForm";
 
-const useValidator = (name, validator, form) => {
+const useValidator = (name: string, validator: (value: string) => string | null, form: FormRefObject) => {
 	useEffect(() => {
 		form.setValidators((prev) => ({ ...prev, [name]: validator }));
 

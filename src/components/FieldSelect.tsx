@@ -23,7 +23,7 @@ const FieldSelect = (props: FieldSelectProps) => {
 				variant="outlined"
 				labelId={`${id}-label`}
 				id={id}
-				value={form.fields?.[name] || ''}
+				value={form.fields?.[name] || ""}
 				onChange={handleChange}
 				disabled={disabled}
 				error={form.hasError(name)}>
