@@ -16,14 +16,14 @@ const useForm = (onSubmit: (values: any) => void, initialState: any = {}) => {
 	const [errors, setErrors] = useState({});
 	const [validators, setValidators] = useState({});
 
-	const hasError = (name) => {
+	const hasError = (name: string) => {
 		if (errors[name]) {
 			return true;
 		}
 		return false;
 	};
 
-	const getHelperText = (name) => {
+	const getHelperText = (name: string) => {
 		if (errors[name]) {
 			return errors[name];
 		}
@@ -59,7 +59,7 @@ const useForm = (onSubmit: (values: any) => void, initialState: any = {}) => {
 		}
 	};
 
-	const handleChange = (name, value, validator) => {
+	const handleChange = (name: string, value: any, validator?: (value: string) => string | null) => {
 		setFields((prev) => ({ ...prev, [name]: value }));
 
 		if (validator) {
