@@ -8,7 +8,7 @@ npm install -g typescript; npm install; tsc;
 
 ## How it works
 
-EZForm core mechanic relies on hooks. Each `Field` component registers its validators to the form object created by the `useForm` hook. This process takes places after the component has been mounted. In turn, when the component is unmounted, it automatically unregisters itself from the form. This means you can dynamically add and remove form fields and have more complex structured forms, without having to know how all fields look like in the form.
+EZForm core mechanic relies on hooks. Each `Field` component registers its validator to the form object created by the `useForm` hook. This process takes places after the component has been mounted. In turn, when the component is unmounted, it automatically unregisters itself from the form. This means you can dynamically add and remove form fields and have more complex structured forms, without having to know how all fields look like in the form.
 
 When a `Field`s value changes, it will update the `field` state provided by the hook and validate that single field. If an error occurs, the error message will be stored in the `errors` state provided by the hook.
 
@@ -55,7 +55,7 @@ Now lets get to the interesting part! We can now build our form however we like 
 <FieldText id="lastName" name="lastName" form={ezform} validator={defaultValidators.required} label="Dont forget your last name" />
 ````
 
-And in to submit the form simply use the submit function from our ezform object:
+And in order to submit the form simply use the submit function from our ezform object:
 
 ````
 <button onClick={ezform.submit}>Submit</button>
@@ -143,7 +143,7 @@ Multiple radio inputs under the same field name
 
 ## Creating your own Fields
 
-You may want to integrate EZForm into you project without having to use Material UI's form components. 
+You may want to integrate EZForm into your project without having to use Material UI's form components. 
 
 All EZForm needs to work, is for your component to:
 
