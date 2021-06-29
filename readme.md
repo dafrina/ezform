@@ -100,7 +100,7 @@ Checks if an email is formed correctly
 
 Checks if a URL is formed correctly
 
-Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new one and call the default validators yourself to mix and match.
+Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new validator function and call the default validators (or custom ones!) yourself to mix and match.
 
 ## Components
 
