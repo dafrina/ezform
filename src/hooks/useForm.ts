@@ -2,7 +2,9 @@ import { useState } from "react";
 
 export interface FormRefObject {
 	fields: any;
-	setFields: (f: any) => void;
+	setFields: (f: (prevState: any) => any) => void;
+	getField: (name: string) => any;
+	setField: (name: string, value: any) => void;
 	errors: any;
 	setValidators: (f: any) => void;
 	handleChange: (name: string, value: any, validator?: (value: string) => string | null) => void;
@@ -69,9 +71,19 @@ export const useForm = (onSubmit: (values: any) => void, initialState: any = {})
 		}
 	};
 
+	const getField = (name) => {
+		return fields?.[name];
+	};
+
+	const setField = (name, value) => {
+		setFields((prev) => ({ ...prev, [name]: value }));
+	};
+
 	return {
 		fields,
 		setFields,
+		getField,
+		setField,
 		errors,
 		setValidators,
 		handleChange,
