@@ -1,13 +1,13 @@
 import React from "react";
-import {FieldBaseProps} from "./FieldBase";
-import useValidator from "../hooks/useValidator";
+import { FieldBaseProps } from "./FieldBase";
+import { useValidator } from "../hooks";
 import { FormControl, FormControlLabel, FormLabel, RadioGroup, Radio, FormHelperText } from "@material-ui/core";
 
 interface FieldRadioGroupProps extends FieldBaseProps {
 	options?: { key: string; value: string; label: string; disabled?: boolean }[];
 }
 
-const FieldRadioGroup = (props: FieldRadioGroupProps) => {
+export const FieldRadioGroup = (props: FieldRadioGroupProps) => {
 	const { id, name, form, validator = () => null, label, options } = props;
 
 	useValidator(name, validator, form);
@@ -34,5 +34,3 @@ const FieldRadioGroup = (props: FieldRadioGroupProps) => {
 		</FormControl>
 	);
 };
-
-export default FieldRadioGroup;

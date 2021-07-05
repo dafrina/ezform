@@ -11,7 +11,7 @@ export interface FormRefObject {
 	getHelperText: (name: string) => string | null;
 }
 
-const useForm = (onSubmit: (values: any) => void, initialState: any = {}) => {
+export const useForm = (onSubmit: (values: any) => void, initialState: any = {}) => {
 	const [fields, setFields] = useState(initialState);
 	const [errors, setErrors] = useState({});
 	const [validators, setValidators] = useState({});
@@ -80,5 +80,3 @@ const useForm = (onSubmit: (values: any) => void, initialState: any = {}) => {
 		getHelperText,
 	} as FormRefObject;
 };
-
-export default useForm;

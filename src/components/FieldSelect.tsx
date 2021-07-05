@@ -1,13 +1,13 @@
 import React from "react";
-import {FieldBaseProps} from "./FieldBase";
-import useValidator from "../hooks/useValidator";
+import { FieldBaseProps } from "./FieldBase";
+import { useValidator } from "../hooks";
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@material-ui/core";
 
 interface FieldSelectProps extends FieldBaseProps {
 	options?: { key: string; value: string; label: string; disabled?: boolean }[];
 }
 
-const FieldSelect = (props: FieldSelectProps) => {
+export const FieldSelect = (props: FieldSelectProps) => {
 	const { id, name, form, validator = () => null, disabled, label, options } = props;
 
 	useValidator(name, validator, form);
@@ -37,5 +37,3 @@ const FieldSelect = (props: FieldSelectProps) => {
 		</FormControl>
 	);
 };
-
-export default FieldSelect;

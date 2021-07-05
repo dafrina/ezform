@@ -1,6 +1,6 @@
 import React from "react";
-import {FieldBaseProps} from "./FieldBase";
-import useValidator from "../hooks/useValidator";
+import { FieldBaseProps } from "./FieldBase";
+import { useValidator } from "../hooks";
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 

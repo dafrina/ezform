@@ -1,9 +1,9 @@
 import React from "react";
-import {FieldBaseProps} from "./FieldBase";
-import useValidator from "../hooks/useValidator";
+import { FieldBaseProps } from "./FieldBase";
+import { useValidator } from "../hooks";
 import { FormControl, FormControlLabel, Checkbox, FormHelperText } from "@material-ui/core";
 
-const FieldCheckbox = (props: FieldBaseProps) => {
+export const FieldCheckbox = (props: FieldBaseProps) => {
 	const { id, name, form, validator = () => null, disabled, label } = props;
 
 	useValidator(name, validator, form);
@@ -32,5 +32,3 @@ const FieldCheckbox = (props: FieldBaseProps) => {
 		</FormControl>
 	);
 };
-
-export default FieldCheckbox;

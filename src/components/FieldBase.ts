@@ -1,4 +1,4 @@
-import { FormRefObject } from "../hooks/useForm";
+import { FormRefObject } from "../hooks";
 
 export interface FieldBaseProps {
 	name: string;

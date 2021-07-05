@@ -1,13 +1,13 @@
 import React from "react";
-import {FieldBaseProps} from "./FieldBase";
-import useValidator from "../hooks/useValidator";
+import { FieldBaseProps } from "./FieldBase";
+import { useValidator } from "../hooks";
 import { TextField } from "@material-ui/core";
 
 interface FieldTextProps extends FieldBaseProps {
 	multiline?: boolean;
 }
 
-const FieldText = (props: FieldTextProps) => {
+export const FieldText = (props: FieldTextProps) => {
 	const { id, name, form, validator = () => null, disabled, label, multiline = false } = props;
 
 	useValidator(name, validator, form);
@@ -31,5 +31,3 @@ const FieldText = (props: FieldTextProps) => {
 		/>
 	);
 };
-
-export default FieldText;

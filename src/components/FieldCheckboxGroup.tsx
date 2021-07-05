@@ -1,13 +1,13 @@
 import React from "react";
-import {FieldBaseProps} from "./FieldBase";
-import useValidator from "../hooks/useValidator";
+import { FieldBaseProps } from "./FieldBase";
+import { useValidator } from "../hooks";
 import { FormControl, FormControlLabel, FormLabel, FormGroup, Checkbox, FormHelperText } from "@material-ui/core";
 
 interface FieldCheckboxGroupProps extends FieldBaseProps {
 	options?: { key: string; value: string; label: string; disabled?: boolean }[];
 }
 
-const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
+export const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 	const { id, name, form, validator = () => null, label, options } = props;
 
 	useValidator(name, validator, form);
@@ -61,5 +61,3 @@ const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 		</FormControl>
 	);
 };
-
-export default FieldCheckboxGroup;
