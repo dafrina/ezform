@@ -6,7 +6,7 @@ export interface FormRefObject {
 	getField: (name: string) => any;
 	setField: (name: string, value: any) => void;
 	errors: any;
-	setValidators: (f: any) => void;
+	setValidators: (f: (prevState: any) => any) => void;
 	handleChange: (name: string, value: any, validator?: (value: string) => string | null) => void;
 	submit: () => void;
 	hasError: (name: string) => boolean;
