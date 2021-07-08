@@ -6,6 +6,12 @@
 npm install -g typescript; npm install; tsc;
 ````
 
+## Demo
+
+You can find a working demo here:
+
+(https://codesandbox.io/s/nostalgic-fog-nun1p)
+
 ## How it works
 
 EZForm's core mechanic relies on hooks. Each `Field` component registers its validator to the form object created by the `useForm` hook. This process takes place after the component has been mounted. In turn, when the component is unmounted, it automatically unregisters itself from the form. This means you can dynamically add and remove form fields and have more complex structured forms, without having to know how all fields look like in the form.
