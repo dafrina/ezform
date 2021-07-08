@@ -4,11 +4,12 @@ import { useValidator } from "../hooks";
 import { FormControl, FormControlLabel, FormLabel, FormGroup, Checkbox, FormHelperText } from "@material-ui/core";
 
 interface FieldCheckboxGroupProps extends FieldBaseProps {
-	options?: { key: string; value: string; label: string; disabled?: boolean }[];
+	options: { key: string; value: string; label: string; disabled?: boolean }[];
+	color?: "default" | "primary" | "secondary";
 }
 
 export const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
-	const { id, name, form, validator = () => null, label, options } = props;
+	const { id, name, form, validator = () => null, label, options, color = "secondary" } = props;
 
 	useValidator(name, validator, form);
 
@@ -50,6 +51,7 @@ export const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 									value={option.value}
 									onChange={handleChange(option)}
 									name={`${name}-key-${i}`}
+									color={color}
 								/>
 							}
 							label={option.label}

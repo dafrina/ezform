@@ -1,5 +1,5 @@
 export const requiredValidator = (value) => {
-	if (!value || value === '') {
+	if (!value || value === "") {
 		return "This field cannot be empty";
 	}
 	return null;
@@ -31,7 +31,14 @@ export const urlValidator = (value) => {
 
 export const numberValidator = (value) => {
 	if (isNaN(Number(value))) {
-		return "Please enter a valid number"
+		return "Please enter a valid number";
 	}
 	return null;
 };
+
+export const dateValidator = (value) => {
+	if (value === null || isNaN(value)) {
+		return "Please select a date";
+	}
+	return null;
+}

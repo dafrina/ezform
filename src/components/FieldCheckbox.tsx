@@ -3,8 +3,12 @@ import { FieldBaseProps } from "./FieldBase";
 import { useValidator } from "../hooks";
 import { FormControl, FormControlLabel, Checkbox, FormHelperText } from "@material-ui/core";
 
-export const FieldCheckbox = (props: FieldBaseProps) => {
-	const { id, name, form, validator = () => null, disabled, label } = props;
+interface FieldCheckboxProps extends FieldBaseProps {
+	color?: "default" | "primary" | "secondary";
+}
+
+export const FieldCheckbox = (props: FieldCheckboxProps) => {
+	const { id, name, form, validator = () => null, disabled, label, color = "secondary" } = props;
 
 	useValidator(name, validator, form);
 
@@ -23,7 +27,7 @@ export const FieldCheckbox = (props: FieldBaseProps) => {
 						value={form.fields?.[name] || ""}
 						onChange={handleChange}
 						name={name}
-						color="primary"
+						color={color}
 					/>
 				}
 				label={label}

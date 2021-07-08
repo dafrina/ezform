@@ -4,4 +4,5 @@ export * from "./FieldCheckboxGroup";
 export * from "./FieldRadioGroup";
 export * from "./FieldText";
 export * from "./FieldSelect";
+export * from "./FieldMultiSelect";
 export * from "./FieldDate";

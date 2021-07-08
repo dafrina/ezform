@@ -4,11 +4,12 @@ import { useValidator } from "../hooks";
 import { FormControl, FormControlLabel, FormLabel, RadioGroup, Radio, FormHelperText } from "@material-ui/core";
 
 interface FieldRadioGroupProps extends FieldBaseProps {
-	options?: { key: string; value: string; label: string; disabled?: boolean }[];
+	options: { key: string; value: string; label: string; disabled?: boolean }[];
+	color?: "default" | "primary" | "secondary";
 }
 
 export const FieldRadioGroup = (props: FieldRadioGroupProps) => {
-	const { id, name, form, validator = () => null, label, options } = props;
+	const { id, name, form, validator = () => null, label, options, color = "secondary" } = props;
 
 	useValidator(name, validator, form);
 
@@ -24,7 +25,7 @@ export const FieldRadioGroup = (props: FieldRadioGroupProps) => {
 					<FormControlLabel
 						key={option.key}
 						value={option.value}
-						control={<Radio />}
+						control={<Radio color={color} />}
 						label={option.label}
 						disabled={option?.disabled || false}
 					/>
