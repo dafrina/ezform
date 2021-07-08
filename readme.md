@@ -182,6 +182,13 @@ Multiple radio inputs under the same field name
 - options: { key: string; value: string; label: string; disabled?: boolean }[];
 - color?: "default" | "primary" | "secondary";
 
+### FieldSearchSelect
+
+Experimental select with search ability
+
+- options: { key: string; value: string; label: string; disabled?: boolean }[];
+- variant?: "filled" | "outlined" | "standard"; 
+
 ## Creating your own Fields
 
 You may want to integrate EZForm into your project without having to use Material UI's form components. 
