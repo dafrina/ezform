@@ -1,6 +1,6 @@
 {
   "name": "@ezform/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -9,6 +9,8 @@
   ],
   "author": "dafrina",
   "license": "ISC",
+  "repository": "https://github.com/dafrina/ezform",
+  "homepage": "https://github.com/dafrina/ezform",
   "scripts": {},
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.8.1",
