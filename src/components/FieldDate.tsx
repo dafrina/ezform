@@ -25,8 +25,8 @@ export const FieldDate = (props: FieldDateProps) => {
 
 	useValidator(name, validator, form);
 
-	const handleChange = (value: any) => {
-		form.handleChange(name, value.valueOf(), validator);
+	const handleChange = (value) => {
+		form.setField(name, value.valueOf());
 	};
 
 	return (
@@ -37,7 +37,6 @@ export const FieldDate = (props: FieldDateProps) => {
 					disableToolbar
 					disabled={disabled}
 					format={format}
-					margin="normal"
 					name={name}
 					id={id}
 					label={label}

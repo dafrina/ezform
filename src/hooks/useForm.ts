@@ -1,22 +1,24 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export interface FormRefObject {
 	fields: any;
 	setFields: (f: (prevState: any) => any) => void;
 	getField: (name: string) => any;
-	setField: (name: string, value: any) => void;
+	setField: (name: string, value: any, validateImmediately?: boolean) => void;
 	errors: any;
 	setValidators: (f: (prevState: any) => any) => void;
-	handleChange: (name: string, value: any, validator?: (value: string) => string | null) => void;
 	submit: () => void;
 	hasError: (name: string) => boolean;
 	getHelperText: (name: string) => string | null;
+	validators: any;
 }
 
 export const useForm = (onSubmit: (values: any) => void, initialState: any = {}) => {
 	const [fields, setFields] = useState(initialState);
-	const [errors, setErrors] = useState({});
-	const [validators, setValidators] = useState({});
+	const [errors, setErrors] = useState({} as any);
+	const [validators, setValidators] = useState({} as any);
+	const validatorsRef = useRef(validators);
+	validatorsRef.current = validators;
 
 	const hasError = (name: string) => {
 		if (errors[name]) {
@@ -40,7 +42,7 @@ export const useForm = (onSubmit: (values: any) => void, initialState: any = {})
 			if (validators[v]) {
 				const validatorResult = validators[v](value);
 
-				setErrors((prev) => ({ ...prev, [v]: validatorResult }));
+				setErrors((prev: any) => ({ ...prev, [v]: validatorResult }));
 
 				if (validatorResult) {
 					hasErrors = true;
@@ -61,22 +63,18 @@ export const useForm = (onSubmit: (values: any) => void, initialState: any = {})
 		}
 	};
 
-	const handleChange = (name: string, value: any, validator?: (value: string) => string | null) => {
-		setFields((prev) => ({ ...prev, [name]: value }));
-
-		if (validator) {
-			const validatorResult = validator(value);
-
-			setErrors((prev) => ({ ...prev, [name]: validatorResult }));
-		}
-	};
-
-	const getField = (name) => {
+	const getField = (name: string) => {
 		return fields?.[name];
 	};
 
-	const setField = (name, value) => {
-		setFields((prev) => ({ ...prev, [name]: value }));
+	const setField = (name: string, value: any, validateImmediately = true) => {
+		setFields((prev: any) => ({ ...prev, [name]: value }));
+
+		if (validateImmediately && validatorsRef.current[name]) {
+			const validatorResult = validatorsRef.current[name](value);
+
+			setErrors((prev: any) => ({ ...prev, [name]: validatorResult }));
+		}
 	};
 
 	return {
@@ -86,7 +84,6 @@ export const useForm = (onSubmit: (values: any) => void, initialState: any = {})
 		setField,
 		errors,
 		setValidators,
-		handleChange,
 		submit,
 		hasError,
 		getHelperText,

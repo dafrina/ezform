@@ -14,7 +14,7 @@ export const FieldSelect = (props: FieldSelectProps) => {
 	useValidator(name, validator, form);
 
 	const handleChange = (e) => {
-		form.handleChange(name, e.target.value, validator);
+		form.setField(name, e.target.value);
 	};
 
 	return (

@@ -37,13 +37,14 @@ const ezform = useForm(
 );
 ````
 
-The `useForm` hook returns an object which contains the following properties/methods:
+The `useForm` hook returns a `FormRefObject` which contains the following properties/methods:
 
 - fields: (object containing all form fields with its values)
 - setFields: (default setter function for the form fields state)
+- setField: (name: string, value: any, validateImmediately?: boolean (default true))
+- getField: (name: string)
 - errors: (object containing all form fields with its error messages or null)
 - setValidators: (default setter function for the validators state)
-- handleChange: (name: string, value: any, validator?: (value: string) => string | null)
 - submit: () => void (validates all form fields and calls the onSubmit function passed to the useForm hook)
 - hasError: (fieldName: string) => boolean
 - getHelperText: (fieldName: string) => string
@@ -51,8 +52,8 @@ The `useForm` hook returns an object which contains the following properties/met
 Now lets get to the interesting part! We can now build our form however we like it, without wrapper components or any other setup but the useForm hook.
 
 ````
-<FieldText id="firstName" name="firstName" form={ezform} validator={defaultValidators.required} label="Please enter your first name" />
-<FieldText id="lastName" name="lastName" form={ezform} validator={defaultValidators.required} label="Dont forget your last name" />
+<FieldText id="firstName" name="firstName" form={ezform} validator={requiredValidator} label="Please enter your first name" />
+<FieldText id="lastName" name="lastName" form={ezform} validator={requiredValidator} label="Dont forget your last name" />
 ````
 
 And in order to submit the form simply use the submit function from our ezform object:
@@ -86,7 +87,7 @@ Checks if a field has a null value or an empty string value
 
 ### requiredListValidator
 
-Checks if an array (such as a checkbox group or multiselect) is empty
+Checks if an array (such as the value of a checkbox group or multiselect) is empty
 
 ### numberValidator
 
@@ -98,7 +99,11 @@ Checks if an email is formed correctly
 
 ### urlValidator
 
-Checks if a URL is formed correctly
+Checks if an URL is formed correctly
+
+### dateValidator
+
+Checks if a date was entered correctly
 
 Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new validator function and call the default validators (or custom ones!) yourself to mix and match.
 
@@ -111,7 +116,7 @@ Currently, EZForm comes with a the most basic form fields based on Material UI f
 This interface acts as a base for all field properties. All form components described below can take the following properties:
 
 - name: string;
-- form: any;
+- form: FormRefObject;
 - id: string;
 - validator?: (value: any) => string | null;
 - disabled?: boolean;
@@ -122,34 +127,60 @@ This interface acts as a base for all field properties. All form components desc
 Basic text input
 
 - multiline?: boolean
+- variant?: "filled" | "outlined" | "standard";
+- color?: "primary" | "secondary";
+- placeholder?: string;
 
 ### FieldSelect
 
 Select dropdown
 
-- options?: { key: string; value: string; label: string; disabled?: boolean }[];
+- options: { key: string; value: string; label: string; disabled?: boolean }[];
+- variant?: "filled" | "outlined" | "standard";
+
+### FieldMultiSelect
+
+Select dropdown
+
+- options: { key: string; value: string; label: string; disabled?: boolean }[];
+- variant?: "filled" | "outlined" | "standard";
 
 ### FieldDate
 
-Materials KeyboardDatePicker input
+Materials KeyboardDateTimePicker input. Please visit (https://material-ui-pickers.dev/api/KeyboardDateTimePicker) for details on what these props do.
+
+The date will be stored in the form fields as a UNIX timestamp.
 
 - format: string;
+- autoOk?: boolean;
+- variant?: "filled" | "outlined" | "standard";
+- minDate?: ParsableDate;
+- minDateMessage?: ReactNode;
+- maxDate?: ParsableDate;
+- maxDateMessage?: ReactNode;
+- views?: Array<"year" | "date" | "month" | "hours" | "minutes">;
+- disablePast?: boolean;
+- disableFuture?: boolean;
 
 ### FieldCheckbox
 
 Single checkbox
 
+- color?: "default" | "primary" | "secondary";
+
 ### FieldCheckboxGroup
 
 Multiple checkboxes under the same field name
 
-- options?: { key: string; value: string; label: string; disabled?: boolean }[];
+- options: { key: string; value: string; label: string; disabled?: boolean }[];
+- color?: "default" | "primary" | "secondary";
 
 ### FieldRadioGroup
 
 Multiple radio inputs under the same field name
 
-- options?: { key: string; value: string; label: string; disabled?: boolean }[];
+- options: { key: string; value: string; label: string; disabled?: boolean }[];
+- color?: "default" | "primary" | "secondary";
 
 ## Creating your own Fields
 
@@ -159,9 +190,11 @@ All EZForm needs to work, is for your component to:
 
 - accept a `name`, `form` and `validator` prop
 - call the `useValidator` hook and pass the `name`, `validator` and `form` as function arguments
-- implement a `handleChange` function which modifies the form field when the value changes. You are free on how you do it, but make sure to call `form.handleChange(name, value, validator);`. Notice that you need to pass the `name` and `validator` props to let EZForm know which field you are changing as well as the `value` of the form field.
+- implement a `handleChange` function which modifies the form field when the value changes. You are free on how you do it, but make sure to call `form.setField(name, value, validateImmediately);`. Notice that you need to pass the `name` prop to let EZForm know which field you are changing as well as the `value` of the form field. You can optionally instruct EZForm to validate the field after a change. If you dont pass the `validateImmediately` argument, it will default to `true`.
 
-EZForm uses this technique internally to integrate Material UI's form fields. Take a look at the `FieldText` source for an easy example:
+EZForm uses this technique internally to integrate Material UI's form fields. The great thing is, you may also call the `setField` method from anywhere you have a reference to the `ezform` object, which means you can alter the form after asynchronous data has been loaded.
+
+Take a look at the `FieldText` source for an easy example:
 
 ````
 const FieldText = (props: FieldTextProps) => {
@@ -170,7 +203,7 @@ const FieldText = (props: FieldTextProps) => {
 	useValidator(name, validator, form);
 
 	const handleChange = (e) => {
-		form.handleChange(name, e.target.value, validator);
+		form.setField(name, e.target.value);
 	};
 
 	return (

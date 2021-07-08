@@ -29,7 +29,7 @@ export const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 			);
 		}
 
-		form.handleChange(name, newList, validator);
+		form.setField(name, newList);
 	};
 
 	return (

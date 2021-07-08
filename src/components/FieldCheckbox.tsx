@@ -13,7 +13,7 @@ export const FieldCheckbox = (props: FieldCheckboxProps) => {
 	useValidator(name, validator, form);
 
 	const handleChange = (e, value) => {
-		form.handleChange(name, value, validator);
+		form.setField(name, value);
 	};
 
 	return (

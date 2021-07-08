@@ -14,7 +14,7 @@ export const FieldRadioGroup = (props: FieldRadioGroupProps) => {
 	useValidator(name, validator, form);
 
 	const handleChange = (e, value) => {
-		form.handleChange(name, value, validator);
+		form.setField(name, value);
 	};
 
 	return (
