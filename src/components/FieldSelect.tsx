@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldBaseProps } from "./FieldBase";
 import { useValidator } from "../hooks";
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@material-ui/core";
+import {MenuItem, TextField} from "@material-ui/core";
 
 interface FieldSelectProps extends FieldBaseProps {
 	options: { key: string; value: string; label: string; disabled?: boolean }[];
@@ -18,26 +18,23 @@ export const FieldSelect = (props: FieldSelectProps) => {
 	};
 
 	return (
-		<FormControl fullWidth>
-			<InputLabel id={`${id}-label`}>{label}</InputLabel>
-			<Select
-				variant={variant}
-				labelId={`${id}-label`}
-				id={id}
-				value={form.fields?.[name] || ""}
-				onChange={handleChange}
-				disabled={disabled}
-				error={form.hasError(name)}
-				autoWidth
-				fullWidth
-			>
-				{options.map((option) => (
-					<MenuItem key={option.key} value={option.value} disabled={option?.disabled || false}>
-						{option.label}
-					</MenuItem>
-				))}
-			</Select>
-			{form.hasError(name) && <FormHelperText error>{form.getHelperText(name)}</FormHelperText>}
-		</FormControl>
+		<TextField
+			select
+			label={label}
+			variant={variant}
+			id={id}
+			value={form.fields?.[name] || ""}
+			onChange={handleChange}
+			disabled={disabled}
+			error={form.hasError(name)}
+			fullWidth
+			helperText={form.getHelperText(name)}
+		>
+			{options.map((option) => (
+				<MenuItem key={option.key} value={option.value} disabled={option?.disabled || false}>
+					{option.label}
+				</MenuItem>
+			))}
+		</TextField>
 	);
 };

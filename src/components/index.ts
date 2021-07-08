@@ -6,3 +6,4 @@ export * from "./FieldText";
 export * from "./FieldSelect";
 export * from "./FieldMultiSelect";
 export * from "./FieldDate";
+export * from "./FieldSearchSelect";
