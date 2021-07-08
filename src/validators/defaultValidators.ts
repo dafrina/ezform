@@ -1,44 +1,44 @@
-export const requiredValidator = (value) => {
+export const requiredValidator = (value, formatMessage) => {
 	if (!value || value === "") {
-		return "This field cannot be empty";
+		return formatMessage ? formatMessage("validation.error.required") : "This field cannot be empty";
 	}
 	return null;
 };
 
-export const requiredListValidator = (value) => {
+export const requiredListValidator = (value, formatMessage) => {
 	if (!value || value.length < 1) {
-		return "Please select at least one";
+		return formatMessage ? formatMessage("validation.error.required_list") : "Please select at least one";
 	}
 	return null;
 };
 
-export const emailValidator = (value) => {
+export const emailValidator = (value, formatMessage) => {
 	const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	if (!re.test(String(value).toLowerCase())) {
-		return "Please enter a valid email";
+		return formatMessage ? formatMessage("validation.error.email") : "Please enter a valid email";
 	}
 	return null;
 };
 
-export const urlValidator = (value) => {
+export const urlValidator = (value, formatMessage) => {
 	try {
 		new URL(value);
 	} catch (e) {
-		return "Please enter a valid URL";
+		return formatMessage ? formatMessage("validation.error.url") : "Please enter a valid URL";
 	}
 	return null;
 };
 
-export const numberValidator = (value) => {
+export const numberValidator = (value, formatMessage) => {
 	if (isNaN(Number(value))) {
-		return "Please enter a valid number";
+		return formatMessage ? formatMessage("validation.error.number") : "Please enter a valid number";
 	}
 	return null;
 };
 
-export const dateValidator = (value) => {
+export const dateValidator = (value, formatMessage) => {
 	if (value === null || isNaN(value)) {
-		return "Please select a date";
+		return formatMessage ? formatMessage("validation.error.date") : "Please select a date";
 	}
 	return null;
 }

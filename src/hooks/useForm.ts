@@ -11,9 +11,16 @@ export interface FormRefObject {
 	hasError: (name: string) => boolean;
 	getHelperText: (name: string) => string | null;
 	validators: any;
+	formatMessage?: (messageKey: string) => string;
 }
 
-export const useForm = (onSubmit: (values: any) => void, initialState: any = {}) => {
+export interface FormConfig {
+	onSubmit: (values: any) => void;
+	initialState?: any;
+	formatMessage?: (messageKey: string) => string;
+}
+
+export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig) => {
 	const [fields, setFields] = useState(initialState);
 	const [errors, setErrors] = useState({} as any);
 	const [validators, setValidators] = useState({} as any);
@@ -40,7 +47,7 @@ export const useForm = (onSubmit: (values: any) => void, initialState: any = {})
 			const value = fields?.[v];
 
 			if (validators[v]) {
-				const validatorResult = validators[v](value);
+				const validatorResult = validators[v](value, formatMessage);
 
 				setErrors((prev: any) => ({ ...prev, [v]: validatorResult }));
 
@@ -71,7 +78,7 @@ export const useForm = (onSubmit: (values: any) => void, initialState: any = {})
 		setFields((prev: any) => ({ ...prev, [name]: value }));
 
 		if (validateImmediately && validatorsRef.current[name]) {
-			const validatorResult = validatorsRef.current[name](value);
+			const validatorResult = validatorsRef.current[name](value, formatMessage);
 
 			setErrors((prev: any) => ({ ...prev, [name]: validatorResult }));
 		}
@@ -87,5 +94,6 @@ export const useForm = (onSubmit: (values: any) => void, initialState: any = {})
 		submit,
 		hasError,
 		getHelperText,
+		formatMessage,
 	} as FormRefObject;
 };
