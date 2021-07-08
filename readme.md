@@ -16,25 +16,32 @@ The aim of this project was to make a powerful validation library that not only 
 
 ## Usage
 
-First we need to tell the program that we want to build a form, and what happens when we submit said form. The form will only be submitted if no currently mounted fields fail validation. We can also set initial data to prefill our form.
+First we need to tell the program that we want to build a form, and what happens when we submit said form. The form will only be submitted if no currently mounted fields fail validation. We can set initial data to prefill our form and we can pass a function as `formatMessage``, which can be used to translate the error message from the validators.
 
 
 ````
-useForm(onSubmit: (values: any) => void, initialData?: any)
+interface FormConfig {
+    onSubmit: (values: any) => void;
+    initialState?: any;
+    formatMessage?: (messageKey: string) => string;
+}
+
+useForm(config: FormConfig);
 ````
 
 For example:
 
 ````
-const ezform = useForm(
-    (values) => {
+const ezform = useForm({
+    onSubmit: (values) => {
         console.log("Form got submitted. Form values:", values);
     },
-    {
+    initialState: {
         firstName: "Johnny",
         lastName: "Silverhand"
     },
-);
+    formatMessage: (messageKey) => translate(messageKey)
+});
 ````
 
 The `useForm` hook returns a `FormRefObject` which contains the following properties/methods:
@@ -44,10 +51,12 @@ The `useForm` hook returns a `FormRefObject` which contains the following proper
 - setField: (name: string, value: any, validateImmediately?: boolean (default true))
 - getField: (name: string)
 - errors: (object containing all form fields with its error messages or null)
+- hasError: (fieldName: string) => boolean
+- validators: (object containing all currently registered validators);
 - setValidators: (default setter function for the validators state)
 - submit: () => void (validates all form fields and calls the onSubmit function passed to the useForm hook)
-- hasError: (fieldName: string) => boolean
 - getHelperText: (fieldName: string) => string
+- formatMessage?: (messageKey: string) => string;
 
 Now lets get to the interesting part! We can now build our form however we like it, without wrapper components or any other setup but the useForm hook.
 
@@ -71,9 +80,20 @@ EZForm works with pure functions as validators and each `Field` component can ta
 This means you can pass any function that follows these requirements:
 
 ````
-const onlyAllowVegans = (value: any) => {
-    if (value === "I like meat!") {
-        return "Sorry, we only allow vegans here!";
+const customValidator = (value: any) => {
+    if (value === "SomeCondition") {
+        return "This is your error text!";
+    }
+    return null;
+}
+````
+
+If you configured `useForm` for use with translations, your validator can also accept a second parameter:
+
+````
+const customValidatorWithTranslation = (value: any, formatMessage?: (messageKey: string) => string) => {
+    if (value === "SomeCondition") {
+        return formatMessage ? formatMessage("translation_key") : "Fallback error text!";
     }
     return null;
 }
@@ -109,7 +129,7 @@ Currently, you can only pass one validator function to a `Field` component. If y
 
 ## Components
 
-Currently, EZForm comes with a the most basic form fields based on Material UI form fields. It is, however, very easy to create your own components to use. Read more about it under "Creating your own Fields". Also, I plan to add more and more customization options and new form components over time.
+Currently, EZForm comes with a set of basic form fields based on Material UI form fields. It is, however, very easy to create your own components to use. Read more about it under "Creating your own Fields". Also, I plan to add more and more customization options and new form components over time.
 
 ### FieldBase interface
 
@@ -188,6 +208,18 @@ Experimental select with search ability
 
 - options: { key: string; value: string; label: string; disabled?: boolean }[];
 - variant?: "filled" | "outlined" | "standard"; 
+
+### FieldCondition
+
+You can wrap any elements inside this component and render them conditionally.
+
+This can be helpful to organize a more complex form.
+
+````
+<FieldCondition when={ foo === "bar" && isTheMoonShining() }>
+    <p>I will only be rendered when foo equals 'bar' and isTheMoonShining() returns true</p>
+</FieldCondition>
+````
 
 ## Creating your own Fields
 
