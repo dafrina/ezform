@@ -18,7 +18,7 @@ export const FieldRadioGroup = (props: FieldRadioGroupProps) => {
 	};
 
 	return (
-		<FormControl error={form.hasError(name)} component="fieldset">
+		<FormControl error={form.hasError(name)} component="fieldset" fullWidth>
 			{label && <FormLabel component="legend">{label}</FormLabel>}
 			<RadioGroup id={id} value={form.fields?.[name] || null} onChange={handleChange}>
 				{options.map((option) => (

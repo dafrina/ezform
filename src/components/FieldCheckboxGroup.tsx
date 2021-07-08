@@ -33,7 +33,7 @@ export const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 	};
 
 	return (
-		<FormControl error={form.hasError(name)} component="fieldset">
+		<FormControl error={form.hasError(name)} component="fieldset" fullWidth>
 			{label && <FormLabel component="legend">{label}</FormLabel>}
 			<FormGroup id={id}>
 				{options.map((option, i) => {
