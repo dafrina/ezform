@@ -34,7 +34,14 @@ export const FieldMultiSelect = (props: FieldMultiSelectProps) => {
 			error={form.hasError(name)}
 			SelectProps={{
 				multiple: true,
-				renderValue: (selected: any) => selected?.join(", ")
+				renderValue: (selected: any) => {
+					let render: string[] = [];
+					selected.map((s: string) => {
+						const option = options.find((o) => o?.value === s);
+						if (option) render.push(option?.label);
+					})
+					return render.join(", ");
+				}
 			}}
 			fullWidth
 			helperText={form.getHelperText(name)}
