@@ -21,7 +21,7 @@ export const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 		});
 
 		if (newList.length <= 0 || !selected) {
-			newList.push({ ...option });
+			newList.push(option.value);
 		} else {
 			newList.splice(newList.indexOf(option.value), 1);
 		}

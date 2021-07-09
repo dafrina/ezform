@@ -5,12 +5,13 @@ export interface FormRefObject {
 	setFields: (f: (prevState: any) => any) => void;
 	getField: (name: string) => any;
 	setField: (name: string, value: any, validateImmediately?: boolean) => void;
-	errors: any;
-	setValidators: (f: (prevState: any) => any) => void;
 	submit: () => void;
+	errors: any;
 	hasError: (name: string) => boolean;
+	hasErrors: () => boolean;
 	getHelperText: (name: string) => string | null;
 	validators: any;
+	setValidators: (f: (prevState: any) => any) => void;
 	formatMessage?: (messageKey: string) => string;
 }
 
@@ -28,11 +29,13 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 	validatorsRef.current = validators;
 
 	const hasError = (name: string) => {
-		if (errors[name]) {
-			return true;
-		}
-		return false;
+		return !!errors[name];
+
 	};
+
+	const hasErrors = () => {
+		return Object.values(errors).map(e => !!e).filter(b => b).length > 0;
+	}
 
 	const getHelperText = (name: string) => {
 		if (errors[name]) {
@@ -66,7 +69,7 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 		if (!hasErrors) {
 			onSubmit(fields);
 		} else {
-			console.log("The form contains errors. Submit disabled");
+			console.log("The form contains errors. Form was not submitted");
 		}
 	};
 
@@ -90,10 +93,12 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 		getField,
 		setField,
 		errors,
-		setValidators,
-		submit,
 		hasError,
+		hasErrors,
+		submit,
 		getHelperText,
 		formatMessage,
+		validators,
+		setValidators,
 	} as FormRefObject;
 };

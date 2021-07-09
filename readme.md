@@ -10,7 +10,7 @@ npm install -g typescript; npm install; tsc;
 
 You can find a working demo here:
 
-(https://codesandbox.io/s/nostalgic-fog-nun1p)
+(https://codesandbox.io/s/adoring-galois-qzqqc)
 
 ## Install
 
@@ -192,9 +192,12 @@ The date will be stored in the form fields as a UNIX timestamp.
 - minDateMessage?: ReactNode;
 - maxDate?: ParsableDate;
 - maxDateMessage?: ReactNode;
+- initialDate?: ParsableDate;
 - views?: Array<"year" | "date" | "month" | "hours" | "minutes">;
 - disablePast?: boolean;
 - disableFuture?: boolean;
+
+EZForm uses `@date-io/moment` to convert dates
 
 ### FieldCheckbox
 
