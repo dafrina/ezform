@@ -16,17 +16,14 @@ export const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 	const handleChange = (option) => () => {
 		const newList = form.fields[name] || [];
 
-		const selected = form.fields?.[name]?.find((obj) => {
-			return obj.key === option.key;
+		const selected = form.fields?.[name]?.find((val) => {
+			return val === option.value;
 		});
 
 		if (newList.length <= 0 || !selected) {
 			newList.push({ ...option });
 		} else {
-			newList.splice(
-				newList.findIndex((o) => o.key === option.key),
-				1,
-			);
+			newList.splice(newList.indexOf(option.value), 1);
 		}
 
 		form.setField(name, newList);
@@ -37,9 +34,7 @@ export const FieldCheckboxGroup = (props: FieldCheckboxGroupProps) => {
 			{label && <FormLabel component="legend">{label}</FormLabel>}
 			<FormGroup id={id}>
 				{options.map((option, i) => {
-					const selected = form.fields?.[name]?.find((obj) => {
-						return obj.key === option.key;
-					});
+					const selected = form.fields?.[name]?.find((val) => val === option.value);
 
 					return (
 						<FormControlLabel
