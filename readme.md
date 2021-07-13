@@ -30,7 +30,7 @@ The aim of this project was to make a powerful validation library that not only 
 
 ## Usage
 
-First we need to tell the program that we want to build a form, and what happens when we submit said form. The form will only be submitted if no currently mounted fields fail validation. We can set initial data to prefill our form and we can pass a function as `formatMessage``, which can be used to translate the error message from the validators.
+First we need to tell the program that we want to build a form, and what happens when we submit said form. The form will only be submitted if no currently mounted fields fail validation. We can set initial data to prefill our form and we can pass a function as `formatMessage`, which can be used to translate the error message from the validators.
 
 
 ````
@@ -181,11 +181,13 @@ Select dropdown
 
 ### FieldDate
 
-Materials KeyboardDateTimePicker input. Please visit (https://material-ui-pickers.dev/api/KeyboardDateTimePicker) for details on what these props do.
+Material UI's date input. Please visit (https://material-ui-pickers.dev) for details on what these props do.
 
-The date will be stored in the form fields as a UNIX timestamp.
+The date will be stored in the form fields as a UNIX timestamp. Default type is "date".
 
 - format: string;
+- type?: "date" | "datetime" | "time"
+- disableToolbar?: boolean;
 - autoOk?: boolean;
 - variant?: "filled" | "outlined" | "standard";
 - minDate?: ParsableDate;
@@ -193,7 +195,6 @@ The date will be stored in the form fields as a UNIX timestamp.
 - maxDate?: ParsableDate;
 - maxDateMessage?: ReactNode;
 - initialDate?: ParsableDate;
-- views?: Array<"year" | "date" | "month" | "hours" | "minutes">;
 - disablePast?: boolean;
 - disableFuture?: boolean;
 
