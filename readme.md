@@ -139,7 +139,11 @@ Checks if an URL is formed correctly
 
 Checks if a date was entered correctly
 
-Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new validator function and call the default validators (or custom ones!) yourself to mix and match.
+### fileValidator
+
+Checks if a file was selected on a `FieldFile` component. Please note that this validator only checks if a file is selected, but not if the filetype or size is invalid. You need to implement your own validator to handle these cases.
+
+> Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new validator function and call the default validators (or custom ones!) yourself to mix and match.
 
 ## Components
 
