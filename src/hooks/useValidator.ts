@@ -7,6 +7,7 @@ export const useValidator = (name: string, validator: (value: string) => string 
 
 		return () => {
 			form.setValidators((prev) => ({ ...prev, [name]: null }));
+			form.setFields((prev) => ({ ...prev, [name]: null }));
 		};
 	}, []);
 };
