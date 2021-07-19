@@ -22,7 +22,26 @@ interface FieldDateProps extends FieldBaseProps {
 }
 
 export const FieldDate = (props: FieldDateProps) => {
-	const { id, name, form, validator = () => null, disabled, label, format, autoOk = true, disableToolbar = false, variant = "standard", minDate, maxDate, minDateMessage, maxDateMessage, initialDate, disablePast, disableFuture, type = "date" } = props;
+	const {
+		id,
+		name,
+		form,
+		validator = () => null,
+		disabled,
+		label,
+		format,
+		autoOk = true,
+		disableToolbar = false,
+		variant = "standard",
+		minDate,
+		maxDate,
+		minDateMessage,
+		maxDateMessage,
+		initialDate,
+		disablePast,
+		disableFuture,
+		type = "date"
+	} = props;
 
 	useValidator(name, validator, form);
 

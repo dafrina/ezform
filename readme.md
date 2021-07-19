@@ -179,27 +179,6 @@ Select dropdown
 - options: { key: string; value: string; label: string; disabled?: boolean }[];
 - variant?: "filled" | "outlined" | "standard";
 
-### FieldDate
-
-Material UI's date input. Please visit (https://material-ui-pickers.dev) for details on what these props do.
-
-The date will be stored in the form fields as a UNIX timestamp. Default type is "date".
-
-- format: string;
-- type?: "date" | "datetime" | "time"
-- disableToolbar?: boolean;
-- autoOk?: boolean;
-- variant?: "filled" | "outlined" | "standard";
-- minDate?: ParsableDate;
-- minDateMessage?: ReactNode;
-- maxDate?: ParsableDate;
-- maxDateMessage?: ReactNode;
-- initialDate?: ParsableDate;
-- disablePast?: boolean;
-- disableFuture?: boolean;
-
-EZForm uses `@date-io/moment` to convert dates
-
 ### FieldCheckbox
 
 Single checkbox
@@ -225,7 +204,42 @@ Multiple radio inputs under the same field name
 Experimental select with search ability
 
 - options: { key: string; value: string; label: string; disabled?: boolean }[];
-- variant?: "filled" | "outlined" | "standard"; 
+- variant?: "filled" | "outlined" | "standard";
+
+### FieldDate
+
+Material UI's date input. Please visit (https://material-ui-pickers.dev) for details on what these props do.
+
+The date will be stored in the form fields as a UNIX timestamp. Default type is "date".
+
+- format: string;
+- type?: "date" | "datetime" | "time"
+- disableToolbar?: boolean;
+- autoOk?: boolean;
+- variant?: "filled" | "outlined" | "standard";
+- minDate?: ParsableDate;
+- minDateMessage?: ReactNode;
+- maxDate?: ParsableDate;
+- maxDateMessage?: ReactNode;
+- initialDate?: ParsableDate;
+- disablePast?: boolean;
+- disableFuture?: boolean;
+
+EZForm uses `@date-io/moment` to convert dates
+
+### FieldFile
+
+Simple file upload using native input type="file". This field will be rendered as a button.
+
+- buttonLabel?: string;
+- defaultHelperText?: string;
+- noFileSelectedText?: string;
+- fileSelectedText?: string;
+- variant?: "contained" | "outlined" | "text";
+- color?: "default" | "inherit" | "primary" | "secondary";
+- multiple?: boolean;
+
+The submitted value will be of type [File](https://developer.mozilla.org/en-US/docs/Web/API/File) or [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) in case the ``multiple`` prop is passed.
 
 ### FieldCondition
 

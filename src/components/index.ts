@@ -8,3 +8,4 @@ export * from "./FieldMultiSelect";
 export * from "./FieldDate";
 export * from "./FieldSearchSelect";
 export * from "./FieldCondition";
+export * from "./FieldFile";

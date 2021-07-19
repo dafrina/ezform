@@ -41,4 +41,11 @@ export const dateValidator = (value, formatMessage) => {
 		return formatMessage ? formatMessage("validation.error.date") : "Please select a date";
 	}
 	return null;
-}
+};
+
+export const fileValidator = (value, formatMessage) => {
+	if (!value) {
+		return formatMessage ? formatMessage("validation.error.file") : "Please select a file";
+	}
+	return null;
+};
