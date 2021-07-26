@@ -3,7 +3,7 @@
 ## Build Project
 
 ````
-npm install -g typescript; npm install; tsc;
+npm install -g typescript; npm install; npm run build;
 ````
 
 ## Demo
@@ -65,10 +65,12 @@ The `useForm` hook returns a `FormRefObject` which contains the following proper
 - setField: (name: string, value: any, validateImmediately?: boolean (default true))
 - getField: (name: string)
 - errors: (object containing all form fields with its error messages or null)
+- setErrors: (default setter function for the form errors state)
 - hasError: (fieldName: string) => boolean
 - validators: (object containing all currently registered validators);
 - setValidators: (default setter function for the validators state)
 - submit: () => void (validates all form fields and calls the onSubmit function passed to the useForm hook)
+- reset: () => void (clears all form fields and resets the errors)
 - getHelperText: (fieldName: string) => string
 - formatMessage?: (messageKey: string) => string;
 
@@ -147,11 +149,11 @@ Checks if a file was selected on a `FieldFile` component. Please note that this 
 
 ## Components
 
-Currently, EZForm comes with a set of basic form fields based on Material UI form fields. It is, however, very easy to create your own components to use. Read more about it under "Creating your own Fields". Also, I plan to add more and more customization options and new form components over time.
+Currently, EZForm comes with a set of basic form fields based on Material UI form fields. It is, however, very easy to create your own components to use. Read more about it under "Creating your own Fields".
 
 ### FieldBase interface
 
-This interface acts as a base for all field properties. All form components described below can take the following properties:
+This interface acts as a base for all field properties. All form components described below (except FieldCondition) can take the following properties:
 
 - name: string;
 - form: FormRefObject;
@@ -264,7 +266,7 @@ You may want to integrate EZForm into your project without having to use Materia
 All EZForm needs to work, is for your component to:
 
 - accept a `name`, `form` and `validator` prop
-- call the `useValidator` hook and pass the `name`, `validator` and `form` as function arguments
+- call the `useField` hook and pass the `name`, `validator` and `form` as function arguments
 - implement a `handleChange` function which modifies the form field when the value changes. You are free on how you do it, but make sure to call `form.setField(name, value, validateImmediately);`. Notice that you need to pass the `name` prop to let EZForm know which field you are changing as well as the `value` of the form field. You can optionally instruct EZForm to validate the field after a change. If you dont pass the `validateImmediately` argument, it will default to `true`.
 
 EZForm uses this technique internally to integrate Material UI's form fields. The great thing is, you may also call the `setField` method from anywhere you have a reference to the `ezform` object, which means you can alter the form after asynchronous data has been loaded.
@@ -275,7 +277,7 @@ Take a look at the `FieldText` source for an easy example:
 const FieldText = (props: FieldTextProps) => {
 	const { id, name, form, validator = () => null, disabled, label, multiline = false } = props;
 
-	useValidator(name, validator, form);
+	useField(name, validator, form);
 
 	const handleChange = (e) => {
 		form.setField(name, e.target.value);

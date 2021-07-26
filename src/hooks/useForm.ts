@@ -1,30 +1,56 @@
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+
+export type FieldType = any | null;
+export type MountedType = boolean | null;
+export type ErrorType = string | null;
+export type FormatMessageType = (messageKey: string) => string;
+export type ValidatorType = (value: FieldType, formatMessage?: FormatMessageType) => string | null;
+
+interface FieldValues {
+	[key: string]: FieldType;
+}
+
+interface MountedValues {
+	[key: string]: MountedType;
+}
+
+interface ErrorValues {
+	[key: string]: ErrorType;
+}
+
+interface ValidatorValues {
+	[key: string]: ValidatorType;
+}
 
 export interface FormRefObject {
-	fields: any;
-	setFields: (f: (prevState: any) => any) => void;
-	getField: (name: string) => any;
-	setField: (name: string, value: any, validateImmediately?: boolean) => void;
-	submit: () => void;
-	errors: any;
+	fields: FieldValues;
+	setFields: Dispatch<SetStateAction<FieldValues>>;
+	getField: (name: string) => FieldType;
+	setField: (name: string, value: FieldType, validateImmediately?: boolean) => void;
+	errors: ErrorValues;
+	setErrors: Dispatch<SetStateAction<ErrorValues>>;
 	hasError: (name: string) => boolean;
 	hasErrors: () => boolean;
+	submit: () => void;
+	reset: () => void;
 	getHelperText: (name: string) => string | null;
-	validators: any;
-	setValidators: (f: (prevState: any) => any) => void;
-	formatMessage?: (messageKey: string) => string;
+	formatMessage?: FormatMessageType;
+	validators: ValidatorValues;
+	setValidators: Dispatch<SetStateAction<ValidatorValues>>;
+	setMounted: Dispatch<SetStateAction<MountedValues>>;
 }
 
 export interface FormConfig {
-	onSubmit: (values: any) => void;
-	initialState?: any;
-	formatMessage?: (messageKey: string) => string;
+	onSubmit: (values: FieldValues) => void;
+	initialState?: FieldValues;
+	formatMessage?: FormatMessageType;
 }
 
-export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig) => {
-	const [fields, setFields] = useState(initialState);
-	const [errors, setErrors] = useState({} as any);
-	const [validators, setValidators] = useState({} as any);
+export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig): FormRefObject => {
+	const [fields, setFields] = useState(initialState as FieldValues);
+	const [mounted, setMounted] = useState(initialState as MountedValues);
+	const [errors, setErrors] = useState({} as ErrorValues);
+	const [validators, setValidators] = useState({} as ValidatorValues);
 	const validatorsRef = useRef(validators);
 	validatorsRef.current = validators;
 
@@ -34,8 +60,11 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 	};
 
 	const hasErrors = () => {
-		return Object.values(errors).map(e => !!e).filter(b => b).length > 0;
-	}
+		return Object.values(errors)
+			.map(e => !!e)
+			.filter(b => b)
+			.length > 0;
+	};
 
 	const getHelperText = (name: string) => {
 		if (errors[name]) {
@@ -44,46 +73,54 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 		return null;
 	};
 
-	const validateFields = () => {
-		let hasErrors = false;
-		Object.keys(validators).forEach((v) => {
-			const value = fields?.[v];
-
+	const validateFields = () => Object.keys(validators)
+		.map((v) => {
 			if (validators[v]) {
+				const value = fields?.[v];
 				const validatorResult = validators[v](value, formatMessage);
-
-				setErrors((prev: any) => ({ ...prev, [v]: validatorResult }));
-
-				if (validatorResult) {
-					hasErrors = true;
-				}
+				setErrors((prev) => ({ ...prev, [v]: validatorResult }));
+				return validatorResult;
 			}
-		});
-
-		return hasErrors;
-	};
+		})
+		.filter((v) => v)
+		.length > 0;
 
 	const submit = () => {
 		const hasErrors = validateFields();
 
 		if (!hasErrors) {
-			onSubmit(fields);
+			const values = {};
+
+			Object.keys(fields).forEach((k) => {
+				if (mounted[k] && fields[k]) {
+					values[k] = fields[k];
+				}
+			});
+
+			onSubmit(values);
 		} else {
 			console.log("The form contains errors. Form was not submitted");
 		}
+	};
+
+	const reset = () => {
+		setFields(initialState);
+		setErrors({});
 	};
 
 	const getField = (name: string) => {
 		return fields?.[name];
 	};
 
-	const setField = (name: string, value: any, validateImmediately = true) => {
-		setFields((prev: any) => ({ ...prev, [name]: value }));
+	const setField = (name: string, value: FieldType, validateImmediately = true) => {
+		setFields((prev) => ({ ...prev, [name]: value }));
 
-		if (validateImmediately && validatorsRef.current[name]) {
-			const validatorResult = validatorsRef.current[name](value, formatMessage);
+		const validator = validatorsRef.current[name];
 
-			setErrors((prev: any) => ({ ...prev, [name]: validatorResult }));
+		if (validateImmediately && validator) {
+			const validatorResult = validator(value, formatMessage);
+
+			setErrors((prev) => ({ ...prev, [name]: validatorResult }));
 		}
 	};
 
@@ -93,12 +130,15 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 		getField,
 		setField,
 		errors,
+		setErrors,
 		hasError,
 		hasErrors,
 		submit,
+		reset,
 		getHelperText,
 		formatMessage,
 		validators,
 		setValidators,
-	} as FormRefObject;
+		setMounted,
+	};
 };

@@ -1,2 +1,2 @@
 export * from "./useForm";
-export * from "./useValidator";
+export * from "./useField";
