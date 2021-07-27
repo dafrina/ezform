@@ -8,7 +8,7 @@ npm install -g typescript; npm install; npm run build;
 
 ## Demo
 
-You can find a working demo here:
+You can find a working demo using [@ezform/mui](https://github.com/dafrina/ezform-mui):
 
 (https://codesandbox.io/s/adoring-dewdney-7o9f9)
 
@@ -74,7 +74,9 @@ The `useForm` hook returns a `FormRefObject` which contains the following proper
 - getHelperText: (fieldName: string) => string
 - formatMessage?: (messageKey: string) => string;
 
-Now lets get to the interesting part! We can now build our form however we like it, without wrapper components or any other setup but the useForm hook.
+Now lets get to the interesting part! We can now build our form however we like it, without wrapper components or any other setup but the useForm hook and form components.
+
+> Please note: the examples shown use @ezform/mui form components. [Click here](https://github.com/dafrina/ezform-mui) to use ezform with the Material UI form components.
 
 ````
 <FieldText id="firstName" name="firstName" form={ezform} validator={requiredValidator} label="Please enter your first name" />
@@ -143,121 +145,10 @@ Checks if a date was entered correctly
 
 ### fileValidator
 
-Checks if a file was selected on a `FieldFile` component. Please note that this validator only checks if a file is selected, but not if the filetype or size is invalid. You need to implement your own validator to handle these cases.
+Checks if a file was selected on a `FieldFile` (@ezform/mui) component. Please note that this validator only checks if a file is selected, but not if the filetype or size is invalid. You need to implement your own validator to handle these cases.
 
 > Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new validator function and call the default validators (or custom ones!) yourself to mix and match.
 
-## Components
-
-Currently, EZForm comes with a set of basic form fields based on Material UI form fields. It is, however, very easy to create your own components to use. Read more about it under "Creating your own Fields".
-
-### FieldBase interface
-
-This interface acts as a base for all field properties. All form components described below (except FieldCondition) can take the following properties:
-
-- name: string;
-- form: FormRefObject;
-- id: string;
-- validator?: (value: any) => string | null;
-- disabled?: boolean;
-- label?: string;
-
-### FieldText
-
-Basic text input
-
-- multiline?: boolean
-- variant?: "filled" | "outlined" | "standard";
-- color?: "primary" | "secondary";
-- placeholder?: string;
-
-### FieldSelect
-
-Select dropdown
-
-- options: { key: string; value: string; label: string; disabled?: boolean }[];
-- variant?: "filled" | "outlined" | "standard";
-
-### FieldMultiSelect
-
-Select dropdown
-
-- options: { key: string; value: string; label: string; disabled?: boolean }[];
-- variant?: "filled" | "outlined" | "standard";
-
-### FieldCheckbox
-
-Single checkbox
-
-- color?: "default" | "primary" | "secondary";
-
-### FieldCheckboxGroup
-
-Multiple checkboxes under the same field name
-
-- options: { key: string; value: string; label: string; disabled?: boolean }[];
-- color?: "default" | "primary" | "secondary";
-
-### FieldRadioGroup
-
-Multiple radio inputs under the same field name
-
-- options: { key: string; value: string; label: string; disabled?: boolean }[];
-- color?: "default" | "primary" | "secondary";
-
-### FieldSearchSelect
-
-Experimental select with search ability
-
-- options: { key: string; value: string; label: string; disabled?: boolean }[];
-- variant?: "filled" | "outlined" | "standard";
-
-### FieldDate
-
-Material UI's date input. Please visit (https://material-ui-pickers.dev) for details on what these props do.
-
-The date will be stored in the form fields as a UNIX timestamp. Default type is "date".
-
-- format: string;
-- type?: "date" | "datetime" | "time"
-- disableToolbar?: boolean;
-- autoOk?: boolean;
-- variant?: "filled" | "outlined" | "standard";
-- minDate?: ParsableDate;
-- minDateMessage?: ReactNode;
-- maxDate?: ParsableDate;
-- maxDateMessage?: ReactNode;
-- initialDate?: ParsableDate;
-- disablePast?: boolean;
-- disableFuture?: boolean;
-
-EZForm uses `@date-io/moment` to convert dates
-
-### FieldFile
-
-Simple file upload using native input type="file". This field will be rendered as a button.
-
-- buttonLabel?: string;
-- defaultHelperText?: string;
-- noFileSelectedText?: string;
-- fileSelectedText?: string;
-- variant?: "contained" | "outlined" | "text";
-- color?: "default" | "inherit" | "primary" | "secondary";
-- multiple?: boolean;
-
-The submitted value will be of type [File](https://developer.mozilla.org/en-US/docs/Web/API/File) or [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) in case the ``multiple`` prop is passed.
-
-### FieldCondition
-
-You can wrap any elements inside this component and render them conditionally.
-
-This can be helpful to organize a more complex form.
-
-````
-<FieldCondition when={ foo === "bar" && isTheMoonShining() }>
-    <p>I will only be rendered when foo equals 'bar' and isTheMoonShining() returns true</p>
-</FieldCondition>
-````
 
 ## Creating your own Fields
 
