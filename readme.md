@@ -1,4 +1,4 @@
-# EZForm is an easy form and field-level validation library for react using Material UI components
+# EZForm is an easy form and field-level validation library for react
 
 ## Build Project
 
@@ -145,20 +145,20 @@ Checks if a date was entered correctly
 
 ### fileValidator
 
-Checks if a file was selected on a `FieldFile` (@ezform/mui) component. Please note that this validator only checks if a file is selected, but not if the filetype or size is invalid. You need to implement your own validator to handle these cases.
+Checks if a file was selected on a `FieldFile` ([@ezform/mui](https://github.com/dafrina/ezform-mui)) component. Please note that this validator only checks if a file is selected, but not if the filetype or size is invalid. You need to implement your own validator to handle these cases.
 
 > Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new validator function and call the default validators (or custom ones!) yourself to mix and match.
 
 
 ## Creating your own Fields
 
-You may want to integrate EZForm into your project without having to use Material UI's form components. 
+You may want to integrate EZForm into your project without having to use [@ezform/mui](https://github.com/dafrina/ezform-mui) form components. 
 
 All EZForm needs to work, is for your component to:
 
 - accept a `name`, `form` and `validator` prop
 - call the `useField` hook and pass the `name`, `validator` and `form` as function arguments
-- implement a `handleChange` function which modifies the form field when the value changes. You are free on how you do it, but make sure to call `form.setField(name, value, validateImmediately);`. Notice that you need to pass the `name` prop to let EZForm know which field you are changing as well as the `value` of the form field. You can optionally instruct EZForm to validate the field after a change. If you dont pass the `validateImmediately` argument, it will default to `true`.
+- implement a `handleChange` function which modifies the form field when the value changes. You are free on how you do it, but make sure to call `form.setField(name, value, validateImmediately);`. Notice that you need to pass the `name` prop to let EZForm know which field you are changing as well as the `value` of the form field. You can optionally instruct EZForm to validate the field after a change. If you don't pass the `validateImmediately` argument, it will default to `true`.
 
 EZForm uses this technique internally to integrate Material UI's form fields. The great thing is, you may also call the `setField` method from anywhere you have a reference to the `ezform` object, which means you can alter the form after asynchronous data has been loaded.
 
