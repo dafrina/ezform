@@ -147,7 +147,14 @@ Checks if a date was entered correctly
 
 Checks if a file was selected on a `FieldFile` ([@ezform/mui](https://github.com/dafrina/ezform-mui)) component. Please note that this validator only checks if a file is selected, but not if the filetype or size is invalid. You need to implement your own validator to handle these cases.
 
-> Currently, you can only pass one validator function to a `Field` component. If you wish to combine validators, you can simply make a new validator function and call the default validators (or custom ones!) yourself to mix and match.
+### combinedValidator
+
+This function can be used to combine multiple validators. They will be checked in the order from first to last in the array.
+
+Usage:
+````
+<FieldText label="First name" name="firstName" form={ezform} validator={combinedValidator([requiredValidator, urlValidator])} />
+````
 
 
 ## Creating your own Fields
