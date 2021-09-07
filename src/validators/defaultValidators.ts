@@ -1,4 +1,4 @@
-import { ValidatorType } from "../hooks";
+import {FieldType, ValidatorType} from "../hooks";
 
 export const requiredValidator: ValidatorType = (value, formatMessage) => {
 	if (!value || value === "") {
@@ -50,4 +50,15 @@ export const fileValidator: ValidatorType = (value, formatMessage) => {
 		return formatMessage ? formatMessage("validation.error.file") : "Please select a file";
 	}
 	return null;
+};
+
+export const combinedValidator = (validators: ValidatorType[]): ValidatorType => (value, formatMessage) => {
+	let re = null;
+	for (let i = 0; i < validators.length; i++) {
+		re = validators[i](value, formatMessage);
+		if (re) {
+			return re;
+		}
+	}
+	return re;
 };
