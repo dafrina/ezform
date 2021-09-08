@@ -46,6 +46,13 @@ export interface FormConfig {
 	formatMessage?: FormatMessageType;
 }
 
+const set = (obj: any, path: any, val: any) => {
+	const keys = path.split(".");
+	const lastKey = keys.pop();
+	const lastObj = keys.reduce((obj: any, key: any) => obj[key] = obj[key] || {}, obj);
+	lastObj[lastKey] = val;
+};
+
 export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig): FormRefObject => {
 	const [fields, setFields] = useState(initialState as FieldValues);
 	const [mounted, setMounted] = useState(initialState as MountedValues);
@@ -93,7 +100,7 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 
 			Object.keys(fields).forEach((k) => {
 				if (mounted[k] && fields[k]) {
-					values[k] = fields[k];
+					set(values, k, fields[k]);
 				}
 			});
 
