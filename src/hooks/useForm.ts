@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
 
 export type FieldType = any | null;
 export type MountedType = boolean | null;
@@ -53,17 +53,24 @@ const set = (obj: any, path: any, val: any) => {
 	lastObj[lastKey] = val;
 };
 
+const flatten: (obj: any, roots?: any[], sep?: string) => {} & { [p: string]: any } = (obj: any, roots = [], sep = ".") => Object.keys(obj).reduce((memo, prop) => Object.assign({}, memo, Object.prototype.toString.call(obj[prop]) === "[object Object]" ? flatten(obj[prop], roots.concat([prop])) : {[roots.concat([prop]).join(sep)]: obj[prop]}), {});
+
 export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig): FormRefObject => {
-	const [fields, setFields] = useState(initialState as FieldValues);
-	const [mounted, setMounted] = useState(initialState as MountedValues);
+	const [fields, setFields] = useState(flatten(initialState) as FieldValues);
+	const [mounted, setMounted] = useState({} as MountedValues);
 	const [errors, setErrors] = useState({} as ErrorValues);
 	const [validators, setValidators] = useState({} as ValidatorValues);
 	const validatorsRef = useRef(validators);
 	validatorsRef.current = validators;
 
+	useEffect(() => {
+		if (initialState) {
+			setFields((prevState: FieldValues) => (Object.assign(prevState, flatten(initialState))));
+		}
+	}, [initialState]);
+
 	const hasError = (name: string) => {
 		return !!errors[name];
-
 	};
 
 	const hasErrors = () => {
@@ -111,7 +118,7 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 	};
 
 	const reset = () => {
-		setFields(initialState);
+		setFields(flatten(initialState));
 		setErrors({});
 	};
 

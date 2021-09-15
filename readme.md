@@ -90,7 +90,7 @@ And in order to submit the form simply use the submit function from our ezform o
 ````
 
 > Important: You can use dots to nest your submitted values, but for simplicity you only get the nested object when the form has been submitted (e.g. the values in the onSubmit config function).
-> Example: `<FieldText id="firstName" name="this.path.is.nested.firstName" ... />` will pass an object to the onSubmit config function with the value of firstName stored in `values["this"]["path"]["is"]["nested"]`. However, when accessing fields or errors from the `FormRefObject` directly, they will only be accessible by calling `ezform.fields["this.path.is.nested.firstName"]`
+> Example: `<FieldText id="firstName" name="this.path.is.nested.firstName" ... />` will pass an object to the onSubmit config function with the value of firstName stored in `values["this"]["path"]["is"]["nested"]["firstName"]`. However, when accessing fields or errors from the `FormRefObject` directly, they will only be accessible by calling `ezform.fields["this.path.is.nested.firstName"]`
 
 
 
