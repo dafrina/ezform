@@ -1,5 +1,5 @@
 import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
-import EzformConfig from "../config";
+import {EzformConfig} from "../config";
 
 export type FieldType = any | null;
 export type MountedType = boolean | null;
