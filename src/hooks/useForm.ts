@@ -1,4 +1,5 @@
 import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
+import EzformConfig from "../config";
 
 export type FieldType = any | null;
 export type MountedType = boolean | null;
@@ -23,11 +24,11 @@ interface ValidatorValues {
 }
 
 export interface FormRefObject {
-	fields: FieldValues;
+	getFields: () => FieldValues;
 	setFields: Dispatch<SetStateAction<FieldValues>>;
 	getField: (name: string) => FieldType;
 	setField: (name: string, value: FieldType, validateImmediately?: boolean) => void;
-	errors: ErrorValues;
+	getErrors: () => ErrorValues;
 	setErrors: Dispatch<SetStateAction<ErrorValues>>;
 	hasError: (name: string) => boolean;
 	hasErrors: () => boolean;
@@ -35,7 +36,7 @@ export interface FormRefObject {
 	reset: () => void;
 	getHelperText: (name: string) => string | null;
 	formatMessage?: FormatMessageType;
-	validators: ValidatorValues;
+	getValidators: () => ValidatorValues;
 	setValidators: Dispatch<SetStateAction<ValidatorValues>>;
 	setMounted: Dispatch<SetStateAction<MountedValues>>;
 }
@@ -44,6 +45,7 @@ export interface FormConfig {
 	onSubmit: (values: FieldValues) => void;
 	initialState?: FieldValues;
 	formatMessage?: FormatMessageType;
+	submitUnmountedFields?: boolean;
 }
 
 const set = (obj: any, path: any, val: any) => {
@@ -53,9 +55,12 @@ const set = (obj: any, path: any, val: any) => {
 	lastObj[lastKey] = val;
 };
 
-const flatten: (obj: any, roots?: any[], sep?: string) => {} & { [p: string]: any } = (obj: any, roots = [], sep = ".") => Object.keys(obj).reduce((memo, prop) => Object.assign({}, memo, Object.prototype.toString.call(obj[prop]) === "[object Object]" ? flatten(obj[prop], roots.concat([prop])) : {[roots.concat([prop]).join(sep)]: obj[prop]}), {});
+const flatten: (obj: any, roots?: any[], sep?: string) => any & { [p: string]: any } = (obj: any, roots = [], sep = ".") => Object.keys(obj).reduce((memo, prop) => Object.assign({}, memo, Object.prototype.toString.call(obj[prop]) === "[object Object]" ? flatten(obj[prop], roots.concat([prop])) : {[roots.concat([prop]).join(sep)]: obj[prop]}), {});
 
-export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig): FormRefObject => {
+export const useForm = (props: FormConfig): FormRefObject => {
+
+	const {onSubmit, initialState, formatMessage, submitUnmountedFields} = {...EzformConfig(), ...props};
+
 	const [fields, setFields] = useState(flatten(initialState) as FieldValues);
 	const [mounted, setMounted] = useState({} as MountedValues);
 	const [errors, setErrors] = useState({} as ErrorValues);
@@ -106,8 +111,10 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 			const values = {};
 
 			Object.keys(fields).forEach((k) => {
-				if (mounted[k] && fields[k]) {
-					set(values, k, fields[k]);
+				if (fields[k]) {
+					if (submitUnmountedFields || mounted[k]) {
+						set(values, k, fields[k]);
+					}
 				}
 			});
 
@@ -138,12 +145,24 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 		}
 	};
 
+	const getNestedState = (state: any) => () => {
+		const values = {};
+
+		Object.keys(state).forEach((k) => {
+			if (state[k]) {
+				set(values, k, state[k]);
+			}
+		});
+
+		return values;
+	};
+
 	return {
-		fields,
+		getFields: getNestedState(fields),
 		setFields,
 		getField,
 		setField,
-		errors,
+		getErrors: getNestedState(errors),
 		setErrors,
 		hasError,
 		hasErrors,
@@ -151,7 +170,7 @@ export const useForm = ({onSubmit, initialState = {}, formatMessage}: FormConfig
 		reset,
 		getHelperText,
 		formatMessage,
-		validators,
+		getValidators: getNestedState(validators),
 		setValidators,
 		setMounted,
 	};
