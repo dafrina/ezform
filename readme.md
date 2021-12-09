@@ -10,7 +10,7 @@ npm install -g typescript; npm install; npm run build;
 
 You can find a working demo using [@ezform/mui](https://github.com/dafrina/ezform-mui):
 
-(https://codesandbox.io/s/adoring-dewdney-7o9f9)
+(https://codesandbox.io/s/restless-shape-7rjl6)
 
 ## Install
 
@@ -20,29 +20,22 @@ npm i @ezform/core --save
 
 (https://www.npmjs.com/package/@ezform/core)
 
+## Features
+
+- Lightweight and no dependencies
+- Easy to use (intuitive usage, field level validation/no schematics)
+- Flexible (hooks based, no form wrapper)
+- Easy to extend (custom fields, custom validators)
+- Good performance (only necessary rerenders)
+- Multilingual support
+
 ## How it works
 
-EZForm's core mechanic relies on hooks. Each `Field` component registers its validator to the form object created by the `useForm` hook. This process takes place after the component has been mounted. In turn, when the component is unmounted, it automatically unregisters itself from the form. This means you can dynamically add and remove form fields and have more complex structured forms, without having to know how all fields look like in the form.
+Each `Field` component registers its validator to the form object created by the `useForm` hook. This process takes place after the component has been mounted. In turn, when the component is unmounted, it automatically unregisters itself from the form. This means you can dynamically add and remove form fields and have more complex structured forms, without having to know how all fields look like in the form.
 
-When a `Field`s value changes, it will update the `field` state provided by the hook and validate that single field. If an error occurs, the error message will be stored in the `errors` state provided by the hook.
-
-The aim of this project was to make a powerful validation library that not only works well, but also is extremely easy to use with as little setup as possible required. And EZ indeed it is!
+The aim of this project was to make a powerful validation library that is flexible and easy to use without sacrificing functionality.
 
 ## Usage
-
-First we need to tell the program that we want to build a form, and what happens when we submit said form. The form will only be submitted if no currently mounted fields fail validation. We can set initial data to prefill our form and we can pass a function as `formatMessage`, which can be used to translate the error message from the validators. You can also specify that only mounted fields should be submitted. By default, all fields get submitted. If you want to only get the values for form fields that are mounted, you can override it by setting `submitUnmountedFields` to false. This can be useful if you're building a multi-step form or when you want to include form fields in your initialState without having actual inputs for example.
-
-
-````
-interface FormConfig {
-    onSubmit: (values: any) => void;
-    initialState?: any;
-    formatMessage?: (messageKey: string) => string;
-    submitUnmountedFields?: boolean;
-}
-
-useForm(config: FormConfig);
-````
 
 For example:
 
@@ -54,11 +47,13 @@ const ezform = useForm({
     initialState: {
         firstName: "Johnny",
         lastName: "Silverhand",
-        nested: {
-            objects: "Yes thats possible now!"
+        address: {
+            city: "New York",
+            country: "United States"
         }
     },
-    formatMessage: (messageKey) => translate(messageKey)
+    formatMessage: (messageKey) => translate(messageKey),
+    submitUnmountedFields: false;
 });
 ````
 
@@ -78,13 +73,30 @@ The `useForm` hook returns a `FormRefObject` which contains the following proper
 - getHelperText: (fieldName: string) => string
 - formatMessage?: (messageKey: string) => string;
 
-You can also define a global configuration for all forms in your application:
+> Please note: the examples shown use @ezform/mui form components. [Click here](https://github.com/dafrina/ezform-mui) to use ezform with the Material UI form components.
 
 ````
-import EzformConfig from "@ezform/core";
+<FieldText id="firstName" name="firstName" form={ezform} validator={requiredValidator} label="Please enter your first name" />
+<FieldText id="lastName" name="lastName" form={ezform} validator={requiredValidator} label="Dont forget your last name" />
+<FieldText id="city" name="address.city" form={ezform} validator={requiredValidator} label="City" />
+<FieldText id="country" name="address.country" form={ezform} validator={requiredValidator} label="Country" />
+````
+
+In order to submit the form, call the submit function returned by the hook:
+
+````
+<button onClick={ezform.submit}>Submit</button>
+````
+
+## Global Config
+You can define a global configuration for all forms in your application:
+
+````
+import { EzformConfig } from "@ezform/core";
 
 // set config globally
 EzformConfig({
+    formatMessage: myGlobalTranslateFunction,
     submitUnmountedFields: false
 });
 
@@ -92,48 +104,11 @@ EzformConfig({
 const config = EzformConfig();
 ````
 
-> The global settings can be overridden in the config for each individual form.
-
-Now lets get to the interesting part! We can now build our form however we like it, without wrapper components or any other setup but the useForm hook and form components.
-
-> Please note: the examples shown use @ezform/mui form components. [Click here](https://github.com/dafrina/ezform-mui) to use ezform with the Material UI form components.
-
-````
-<FieldText id="firstName" name="firstName" form={ezform} validator={requiredValidator} label="Please enter your first name" />
-<FieldText id="lastName" name="lastName" form={ezform} validator={requiredValidator} label="Dont forget your last name" />
-````
-
-And in order to submit the form simply use the submit function from our ezform object:
-
-````
-<button onClick={ezform.submit}>Submit</button>
-````
-
-You can use dots to nest your submitted values.
-
-For example `<FieldText name="this.path.is.nested.firstName" ... />` will pass an object to the onSubmit config function with the value of firstName stored in `values["this"]["path"]["is"]["nested"]["firstName"]`.
-
-For simplicity, all values get stored in a flat object internally. When calling `ezform.getFields()`, `ezform.getErrors()` or `ezform.getValidators()` however, you will conveniently get a nested object as well. Keep in mind that you still have to pass the field names as a single string with the full path seperated by dots for other getters and setters:
-
-````
-// set one field directly
-ezform.setField("this.path.is.nested.firstName", "John");
-
-// set field with access to the previous state
-ezform.setFields((previousFields) => {
-    return { ...previousFields, "this.path.is.nested.firstName": "John" }
-}
-
-// get a field value
-ezform.getField("this.path.is.nested.firstName");
-
-// check if a the field has an error
-ezform.hasError("this.path.is.nested.firstName");
-````
+The global config can be overridden in the config for each individual form.
 
 ## Validators
 
-EZForm works with pure functions as validators and each `Field` component can take an optional `validator` prop. The function takes one argument which is the `value` that the field holds.  The only requirement for this function is, that it returns a `string` with an error message in case the input failed the validation, or `null` when the validation was successful.
+EZForm works with pure functions as validators and each `Field` component can take an optional `validator` prop. The function takes one argument which is the `value` that the field holds. The only requirement for this function is, that it returns a `string` with an error message in case the input failed the validation, or `null` when the validation was successful.
 
 This means you can pass any function that follows these requirements:
 
@@ -193,7 +168,7 @@ This function can be used to combine multiple validators. They will be checked i
 
 Usage:
 ````
-<FieldText label="First name" name="firstName" form={ezform} validator={combinedValidator([requiredValidator, urlValidator])} />
+<FieldText validator={combinedValidator([requiredValidator, urlValidator])} ... />
 ````
 
 
@@ -205,38 +180,43 @@ All EZForm needs to work, is for your component to:
 
 - accept a `name`, `form` and `validator` prop
 - call the `useField` hook and pass the `name`, `validator` and `form` as function arguments
-- implement a `handleChange` function which modifies the form field when the value changes. You are free on how you do it, but make sure to call `form.setField(name, value, validateImmediately);`. Notice that you need to pass the `name` prop to let EZForm know which field you are changing as well as the `value` of the form field. You can optionally instruct EZForm to validate the field after a change. If you don't pass the `validateImmediately` argument, it will default to `true`.
+- implement a `handleChange` function which modifies the form field by calling `ezform.setField(name, value, validateImmediately);`. Notice that you need to pass the `name` prop to let EZForm know which field you are changing as well as the `value` of the form field. You can optionally instruct EZForm to validate the field after a change. If you don't pass the `validateImmediately` argument, it will default to `true`.
 
-EZForm uses this technique internally to integrate Material UI's form fields. The great thing is, you may also call the `setField` method from anywhere you have a reference to the `ezform` object, which means you can alter the form after asynchronous data has been loaded.
-
-Take a look at the `FieldText` source from `@ezform/mui` for an easy example:
+Here is a minimal example on how to create your own text input with validation ability:
 
 ````
-export const FieldText = (props: FieldTextProps) => {
-	const { id, name, form, validator = () => null, disabled, label, multiline = false, variant = "standard", color = "primary", placeholder } = props;
+import { useField } from "@ezform/core";
 
-	useField(name, validator, form);
+const CustomInputComponent = (props) => {
+  const { name, form, validator = () => null } = props;
 
-	const handleChange = (e) => {
-		form.setField(name, e.target.value);
-	};
+  // always call this first to register the component to the form
+  useField(name, validator, form);
 
-	return (
-		<TextField
-			variant={variant}
-			color={color}
-			name={name}
-			id={id}
-			label={label}
-			onChange={handleChange}
-			value={form.fields?.[name] || ""}
-			disabled={disabled}
-			error={form.hasError(name)}
-			helperText={form.getHelperText(name)}
-			multiline={multiline}
-			placeholder={placeholder}
-			fullWidth
-		/>
-	);
+  const handleChange = (e) => {
+    form.setField(name, e.target.value);
+  };
+
+  return (
+    <input
+      type="text"
+      onChange={handleChange}
+      name={name}
+      style={form.hasError(name) ? { background: "red" } : {}}
+    />
+  );
 };
+
+...
+
+<CustomInputComponent name="myfield" form={myform} validator={requiredValidator} />
+````
+
+In order to minimize rerenders, use Reacts `memo` and the `propsEqual` function that EZForm provides:
+
+````
+import React, { memo } from "react";
+import { propsEqual } from "@ezform/core";
+
+const CustomInputComponentMemo = memo(CustomInputComponent, propsEqual);
 ````
