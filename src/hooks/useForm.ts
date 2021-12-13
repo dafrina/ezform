@@ -39,6 +39,7 @@ export interface FormRefObject {
 	getValidators: () => ValidatorValues;
 	setValidators: Dispatch<SetStateAction<ValidatorValues>>;
 	setMounted: Dispatch<SetStateAction<MountedValues>>;
+	isReadonly: boolean;
 }
 
 export interface FormConfig {
@@ -46,6 +47,11 @@ export interface FormConfig {
 	initialState?: FieldValues;
 	formatMessage?: FormatMessageType;
 	submitUnmountedFields?: boolean;
+	isReadonly?: boolean;
+	logging?: {
+		warnOnErrors: boolean,
+		logFields: boolean,
+	}
 }
 
 const set = (obj: any, path: any, val: any) => {
@@ -59,7 +65,7 @@ const flatten: (obj: any, roots?: any[], sep?: string) => any & { [p: string]: a
 
 export const useForm = (props: FormConfig): FormRefObject => {
 
-	const {onSubmit, initialState, formatMessage, submitUnmountedFields} = {...EzformConfig(), ...props};
+	const {onSubmit, initialState, formatMessage, submitUnmountedFields, isReadonly, logging} = {...EzformConfig(), ...props};
 
 	const [fields, setFields] = useState(flatten(initialState) as FieldValues);
 	const [mounted, setMounted] = useState({} as MountedValues);
@@ -105,7 +111,16 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		.length > 0;
 
 	const submit = () => {
+		if (isReadonly) {
+			console.warn("Submission is not allowed on readonly forms!");
+			return;
+		}
+
 		const hasErrors = validateFields();
+
+		if (logging.logFields) {
+			console.log("Form fields", fields);
+		}
 
 		if (!hasErrors) {
 			const values = {};
@@ -120,7 +135,9 @@ export const useForm = (props: FormConfig): FormRefObject => {
 
 			onSubmit(values);
 		} else {
-			console.log("The form contains errors. Form was not submitted");
+			if (logging.warnOnErrors) {
+				console.warn("The form contains errors. Form not submitted");
+			}
 		}
 	};
 
@@ -173,5 +190,6 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		getValidators: getNestedState(validators),
 		setValidators,
 		setMounted,
+		isReadonly,
 	};
 };

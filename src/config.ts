@@ -2,7 +2,11 @@ import {FormConfig} from "./hooks";
 
 const _config: Partial<FormConfig> = {
 	initialState: {},
-	submitUnmountedFields: true
+	submitUnmountedFields: true,
+	logging: {
+		warnOnErrors: false,
+		logFields: false,
+	}
 };
 
 export const EzformConfig = (config?: Partial<FormConfig>): Partial<FormConfig> | void => {

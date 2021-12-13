@@ -53,7 +53,8 @@ const ezform = useForm({
         }
     },
     formatMessage: (messageKey) => translate(messageKey),
-    submitUnmountedFields: false;
+    submitUnmountedFields: false,
+    isReadonly: false
 });
 ````
 
@@ -72,6 +73,7 @@ The `useForm` hook returns a `FormRefObject` which contains the following proper
 - reset: () => void (clears all form fields and resets the errors)
 - getHelperText: (fieldName: string) => string
 - formatMessage?: (messageKey: string) => string;
+- isReadonly?: boolean (indicates if the form is readonly)
 
 > Please note: the examples shown use @ezform/mui form components. [Click here](https://github.com/dafrina/ezform-mui) to use ezform with the Material UI form components.
 
@@ -98,6 +100,10 @@ import { EzformConfig } from "@ezform/core";
 EzformConfig({
     formatMessage: myGlobalTranslateFunction,
     submitUnmountedFields: false
+	logging: {
+		warnOnErrors: false,
+		logFields: false,
+	}
 });
 
 // get global config
