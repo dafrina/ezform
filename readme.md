@@ -99,11 +99,11 @@ import { EzformConfig } from "@ezform/core";
 // set config globally
 EzformConfig({
     formatMessage: myGlobalTranslateFunction,
-    submitUnmountedFields: false
-	logging: {
-		warnOnErrors: false,
-		logFields: false,
-	}
+    submitUnmountedFields: false,
+    logging: {
+        warnOnErrors: false,
+        logFields: false,
+    }
 });
 
 // get global config
