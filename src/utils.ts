@@ -2,7 +2,7 @@ export const set = (obj, path, val) => {
 	path = path.replace("[", ".[");
 	const keys = path.split(".");
 	const lastKey = keys.pop();
-	const lastObj = keys.reduce((obj, key, currentIndex) => {
+	let lastObj = keys.reduce((obj, key, currentIndex) => {
 		if (key.includes("[")) {
 			return obj[key.substring(1, key.length-1)];
 		}
