@@ -78,10 +78,22 @@ The `useForm` hook returns a `FormRefObject` which contains the following proper
 > Please note: the examples shown use @ezform/mui form components. [Click here](https://github.com/dafrina/ezform-mui) to use ezform with the Material UI form components.
 
 ````
-<FieldText id="firstName" name="firstName" form={ezform} validator={requiredValidator} label="Please enter your first name" />
-<FieldText id="lastName" name="lastName" form={ezform} validator={requiredValidator} label="Dont forget your last name" />
-<FieldText id="city" name="address.city" form={ezform} validator={requiredValidator} label="City" />
-<FieldText id="country" name="address.country" form={ezform} validator={requiredValidator} label="Country" />
+<FieldText name="firstName" form={ezform} validator={requiredValidator} />
+<FieldText name="lastName" form={ezform} validator={requiredValidator} />
+<FieldText name="address.city" form={ezform} validator={requiredValidator} />
+<FieldText name="address.country" form={ezform} validator={requiredValidator} />
+````
+
+You can create fully dynamic forms. Specify an object path to define fields:
+
+````
+// Map this fields value to 'firstName' property of first client
+<FieldText name="clients[0].firstName" form={ezform} validator={requiredValidator} />
+
+// or map 5 fields iteratively
+{ Array(5).fill().map((num, index) => (
+    <FieldText name={"clients[${index}].firstName"} form={ezform} validator={requiredValidator} />
+))}
 ````
 
 In order to submit the form, call the submit function returned by the hook:

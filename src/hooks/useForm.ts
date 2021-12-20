@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { EzformConfig } from "../config";
-import { set, flatten } from "../utils";
+import { deepSet, flatten } from "../utils";
 
 export type FieldType = any | null;
 export type MountedType = boolean | null;
@@ -120,7 +120,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 			Object.keys(fields).forEach((k) => {
 				if (fields[k]) {
 					if (submitUnmountedFields || mounted[k]) {
-						set(values, k, fields[k]);
+						deepSet(values, k, fields[k]);
 					}
 				}
 			});
@@ -159,7 +159,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 
 		Object.keys(state).forEach((k) => {
 			if (state[k]) {
-				set(values, k, state[k]);
+				deepSet(values, k, state[k]);
 			}
 		});
 

@@ -1,23 +1,43 @@
-export const set = (obj, path, val) => {
-	path = path.replace("[", ".[");
+export const deepGet = (obj: any, path: string) => {
+	path = path.replaceAll("[", ".[");
 	const keys = path.split(".");
-	const lastKey = keys.pop();
-	let lastObj = keys.reduce((obj, key, currentIndex) => {
+	const length = keys.length;
+	for (let i = 0; i < length; i++) {
+		const key = keys[i];
 		if (key.includes("[")) {
-			return obj[key.substring(1, key.length-1)];
+			obj = obj[parseInt(key.substring(1, key.length - 1))];
+		} else {
+			obj = obj[keys[i]];
 		}
-		if (obj[key] && obj[key].length && (keys[currentIndex+1] && keys[currentIndex+1].includes("["))) {
-			let nextKey = keys[currentIndex+1];
-			nextKey = nextKey.substring(1, nextKey.length-1);
-			!obj[key][nextKey] && obj[key].push({});
-		}
-		return obj[key] = obj[key] || ((keys[currentIndex+1] && keys[currentIndex+1].includes("[")) ? [{}] : keys[currentIndex+1] ? {} : val);
 	}
-	, obj);
-	lastObj[lastKey] = val;
+	return obj;
 };
 
-export const flatten = (obj, result = {}, key = "") =>{
+export const deepSet = (obj: any, path: string, val: any) => {
+	path = path.replaceAll("[", ".[");
+	const keys = path.split(".");
+
+	for (let i = 0; i < keys.length; i++) {
+		let currentKey = keys[i] as any;
+		let nextKey = keys[i + 1] as any;
+		if (currentKey.includes("[")) {
+			currentKey = parseInt(currentKey.substring(1, currentKey.length - 1));
+		}
+		if (nextKey && nextKey.includes("[")) {
+			nextKey = parseInt(nextKey.substring(1, nextKey.length - 1));
+		}
+
+		if (typeof nextKey !== "undefined") {
+			obj[currentKey] = obj[currentKey] ? obj[currentKey] : (isNaN(nextKey) ? {} : []);
+		} else {
+			obj[currentKey] = val;
+		}
+
+		obj = obj[currentKey];
+	}
+};
+
+export const flatten = (obj: any, result = {}, key = "") =>{
 	if(Array.isArray(obj)) {
 		obj.forEach((d,i) => {
 			result = flatten(d, result, key + `[${i}]`);
