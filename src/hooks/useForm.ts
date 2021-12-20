@@ -54,14 +54,41 @@ export interface FormConfig {
 	}
 }
 
-const set = (obj: any, path: any, val: any) => {
+const set = (obj, path, val) => {
+	path = path.replace("[", ".[");
 	const keys = path.split(".");
 	const lastKey = keys.pop();
-	const lastObj = keys.reduce((obj: any, key: any) => obj[key] = obj[key] || {}, obj);
+	const lastObj = keys.reduce((obj, key, currentIndex) => {
+		if (key.includes("[")) {
+			return obj[key.substring(1, key.length-1)];
+		}
+		if (obj[key] && obj[key].length && (keys[currentIndex+1] && keys[currentIndex+1].includes("["))) {
+			let nextKey = keys[currentIndex+1];
+			nextKey = nextKey.substring(1, nextKey.length-1);
+			!obj[key][nextKey] && obj[key].push({});
+		}
+		return obj[key] = obj[key] || ((keys[currentIndex+1] && keys[currentIndex+1].includes("[")) ? [{}] : keys[currentIndex+1] ? {} : val);
+	}
+	, obj);
 	lastObj[lastKey] = val;
 };
 
-const flatten: (obj: any, roots?: any[], sep?: string) => any & { [p: string]: any } = (obj: any, roots = [], sep = ".") => Object.keys(obj).reduce((memo, prop) => Object.assign({}, memo, Object.prototype.toString.call(obj[prop]) === "[object Object]" ? flatten(obj[prop], roots.concat([prop])) : {[roots.concat([prop]).join(sep)]: obj[prop]}), {});
+const flatten = (obj, result = {}, key = "") =>{
+	if(Array.isArray(obj)) {
+		obj.forEach((d,i) => {
+			result = flatten(d, result, key + `[${i}]`);
+		});
+	}
+	else if(typeof obj === "object") {
+		for (const i of Object.keys(obj)) {
+			result = flatten(obj[i], result, key ? key + `.${i}` : `${i}`);
+		}
+	}
+	else {
+		result[key] = obj;
+	}
+	return result;
+};
 
 export const useForm = (props: FormConfig): FormRefObject => {
 
