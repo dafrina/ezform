@@ -1,5 +1,6 @@
-import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
-import {EzformConfig} from "../config";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { EzformConfig } from "../config";
+import { set, flatten } from "../utils";
 
 export type FieldType = any | null;
 export type MountedType = boolean | null;
@@ -53,42 +54,6 @@ export interface FormConfig {
 		logFields: boolean,
 	}
 }
-
-const set = (obj, path, val) => {
-	path = path.replace("[", ".[");
-	const keys = path.split(".");
-	const lastKey = keys.pop();
-	const lastObj = keys.reduce((obj, key, currentIndex) => {
-		if (key.includes("[")) {
-			return obj[key.substring(1, key.length-1)];
-		}
-		if (obj[key] && obj[key].length && (keys[currentIndex+1] && keys[currentIndex+1].includes("["))) {
-			let nextKey = keys[currentIndex+1];
-			nextKey = nextKey.substring(1, nextKey.length-1);
-			!obj[key][nextKey] && obj[key].push({});
-		}
-		return obj[key] = obj[key] || ((keys[currentIndex+1] && keys[currentIndex+1].includes("[")) ? [{}] : keys[currentIndex+1] ? {} : val);
-	}
-	, obj);
-	lastObj[lastKey] = val;
-};
-
-const flatten = (obj, result = {}, key = "") =>{
-	if(Array.isArray(obj)) {
-		obj.forEach((d,i) => {
-			result = flatten(d, result, key + `[${i}]`);
-		});
-	}
-	else if(typeof obj === "object") {
-		for (const i of Object.keys(obj)) {
-			result = flatten(obj[i], result, key ? key + `.${i}` : `${i}`);
-		}
-	}
-	else {
-		result[key] = obj;
-	}
-	return result;
-};
 
 export const useForm = (props: FormConfig): FormRefObject => {
 
