@@ -3,17 +3,17 @@ export const set = (obj, path, val) => {
 	const keys = path.split(".");
 	const lastKey = keys.pop();
 	const lastObj = keys.reduce((obj, key, currentIndex) => {
-			if (key.includes("[")) {
-				return obj[key.substring(1, key.length-1)];
-			}
-			if (obj[key] && obj[key].length && (keys[currentIndex+1] && keys[currentIndex+1].includes("["))) {
-				let nextKey = keys[currentIndex+1];
-				nextKey = nextKey.substring(1, nextKey.length-1);
-				!obj[key][nextKey] && obj[key].push({});
-			}
-			return obj[key] = obj[key] || ((keys[currentIndex+1] && keys[currentIndex+1].includes("[")) ? [{}] : keys[currentIndex+1] ? {} : val);
+		if (key.includes("[")) {
+			return obj[key.substring(1, key.length-1)];
 		}
-		, obj);
+		if (obj[key] && obj[key].length && (keys[currentIndex+1] && keys[currentIndex+1].includes("["))) {
+			let nextKey = keys[currentIndex+1];
+			nextKey = nextKey.substring(1, nextKey.length-1);
+			!obj[key][nextKey] && obj[key].push({});
+		}
+		return obj[key] = obj[key] || ((keys[currentIndex+1] && keys[currentIndex+1].includes("[")) ? [{}] : keys[currentIndex+1] ? {} : val);
+	}
+	, obj);
 	lastObj[lastKey] = val;
 };
 
@@ -40,7 +40,7 @@ export const shallowEqual = (object1, object2) => {
 	if (keys1.length !== keys2.length) {
 		return false;
 	}
-	for (let key of keys1) {
+	for (const key of keys1) {
 		if (typeof object1[key] !== "function" && typeof object1[key] !== "object") {
 			if (object1[key] !== object2[key]) {
 				return false;
