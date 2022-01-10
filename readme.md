@@ -92,7 +92,7 @@ You can create fully dynamic forms. Specify an object path to define fields:
 
 // or map 5 fields iteratively
 { Array(5).fill().map((num, index) => (
-    <FieldText name={"clients[${index}].firstName"} form={ezform} validator={requiredValidator} />
+    <FieldText name={"clients[" + index + "].firstName"} form={ezform} validator={requiredValidator} />
 ))}
 ````
 
