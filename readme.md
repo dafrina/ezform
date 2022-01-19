@@ -61,7 +61,7 @@ const ezform = useForm({
 The `useForm` hook returns a `FormRefObject` which contains the following properties/methods:
 
 - getFields: (object containing all form fields with its values, returns a nested object)
-- setFields: (default setter function for the form fields state)
+- setFields: (setterFunction: default setter function for the form fields state, validateImmediately?: boolean (default false) (note that setting this to true validates all form fields))
 - setField: (name: string, value: any, validateImmediately?: boolean (default true))
 - getField: (name: string)
 - getErrors: (object containing all form fields with its error messages or null, returns a nested object)

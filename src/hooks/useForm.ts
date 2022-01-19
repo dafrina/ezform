@@ -26,7 +26,7 @@ interface ValidatorValues {
 
 export interface FormRefObject {
 	getFields: () => FieldValues;
-	setFields: Dispatch<SetStateAction<FieldValues>>;
+	setFields: (setterFunction: (prevState: FieldValues) => FieldValues, validateImmediately?: boolean) => void;
 	getField: (name: string) => FieldType;
 	setField: (name: string, value: FieldType, validateImmediately?: boolean) => void;
 	getErrors: () => ErrorValues;
@@ -64,7 +64,10 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	const [errors, setErrors] = useState({} as ErrorValues);
 	const [validators, setValidators] = useState({} as ValidatorValues);
 	const validatorsRef = useRef(validators);
+	const fieldsRef = useRef(fields);
 	validatorsRef.current = validators;
+	fieldsRef.current = fields;
+	const [validateNow, setValidateNow] = useState(false);
 
 	useEffect(() => {
 		if (initialState) {
@@ -90,17 +93,16 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		return null;
 	};
 
-	const validateFields = () => Object.keys(validators)
+	const validateFields = () => Object.keys(validatorsRef.current)
 		.map((v) => {
-			if (validators[v]) {
-				const value = fields?.[v];
-				const validatorResult = validators[v](value, formatMessage);
+			if (validatorsRef.current[v]) {
+				const value = fieldsRef.current?.[v];
+				const validatorResult = validatorsRef.current[v](value, formatMessage);
 				setErrors((prev) => ({ ...prev, [v]: validatorResult }));
 				return validatorResult;
 			}
 		})
-		.filter((v) => v)
-		.length > 0;
+		.filter((v) => v).length > 0;
 
 	const submit = () => {
 		if (isReadonly) {
@@ -166,9 +168,23 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		return values;
 	};
 
+	const fieldsSetter = (setterFunction: (prevState: FieldValues) => FieldValues, validateImmediately?: boolean) => {
+		setFields((prevState) => flatten(setterFunction(getNestedState(prevState)())));
+		if (validateImmediately) {
+			setValidateNow(true);
+		}
+	};
+
+	useEffect(() => {
+		if (validateNow) {
+			validateFields();
+			setValidateNow(false);
+		}
+	}, [validatorsRef.current]);
+
 	return {
 		getFields: getNestedState(fields),
-		setFields,
+		setFields: fieldsSetter,
 		getField,
 		setField,
 		getErrors: getNestedState(errors),

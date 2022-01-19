@@ -1,3 +1,5 @@
+export const isObjectEmpty = (obj: any) => Object.keys(obj).length === 0;
+
 export const deepGet = (obj: any, path: string) => {
 	path = path.replaceAll("[", ".[");
 	const keys = path.split(".");
@@ -43,7 +45,7 @@ export const flatten = (obj: any, result = {}, key = "") =>{
 			result = flatten(d, result, key + `[${i}]`);
 		});
 	}
-	else if(typeof obj === "object") {
+	else if(typeof obj === "object" && !isObjectEmpty(obj)) {
 		for (const i of Object.keys(obj)) {
 			result = flatten(obj[i], result, key ? key + `.${i}` : `${i}`);
 		}
@@ -54,26 +56,31 @@ export const flatten = (obj: any, result = {}, key = "") =>{
 	return result;
 };
 
-export const shallowEqual = (object1, object2) => {
+export const shallowEqual = (object1: any, object2: any) => {
+	const ignoreProps = ["form", "validator"];
+
 	const keys1 = Object.keys(object1);
 	const keys2 = Object.keys(object2);
 	if (keys1.length !== keys2.length) {
 		return false;
 	}
 	for (const key of keys1) {
-		if (typeof object1[key] !== "function" && typeof object1[key] !== "object") {
-			if (object1[key] !== object2[key]) {
-				return false;
-			}
+		if (ignoreProps.includes(key)) continue;
+		if (JSON.stringify(object1[key]) !== JSON.stringify(object2[key])) {
+			return false;
 		}
 	}
 	return true;
 };
 
-export const propsEqual = (prev, next) => {
+export const propsEqual = (prev: any, next: any) => {
+	let eq = true;
 	if (prev.form.hasError(prev.name) !== next.form.hasError(prev.name)) {
-		return false;
+		eq = false;
+	} else {
+		eq =
+			shallowEqual(prev, next) &&
+			prev.form.getField(prev.name) === next.form.getField(prev.name);
 	}
-
-	return shallowEqual(prev, next) && prev.form.getField(prev.name) === next.form.getField(prev.name);
+	return eq;
 };
