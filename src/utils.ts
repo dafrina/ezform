@@ -39,13 +39,13 @@ export const deepSet = (obj: any, path: string, val: any) => {
 	}
 };
 
-export const flatten = (obj: any, result = {}, key = "") =>{
-	if(Array.isArray(obj)) {
+export const flatten = (obj: any, result = {}, key = "") => {
+	if (Array.isArray(obj)) {
 		obj.forEach((d,i) => {
 			result = flatten(d, result, key + `[${i}]`);
 		});
 	}
-	else if(typeof obj === "object" && !isObjectEmpty(obj)) {
+	else if (obj && typeof obj === "object" && !isObjectEmpty(obj)) {
 		for (const i of Object.keys(obj)) {
 			result = flatten(obj[i], result, key ? key + `.${i}` : `${i}`);
 		}

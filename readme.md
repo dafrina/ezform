@@ -22,7 +22,7 @@ npm i @ezform/core --save
 
 ## Features
 
-- Lightweight (10.9kb gzipped) and zero dependencies
+- Lightweight (11.3kb gzipped) and zero dependencies
 - Easy to use (intuitive usage, field level validation/no schematics)
 - Flexible (hooks based, no form wrapper)
 - Easy to extend (custom fields, custom validators)
