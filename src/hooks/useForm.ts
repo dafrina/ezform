@@ -160,7 +160,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		const values = {};
 
 		Object.keys(state).forEach((k) => {
-			if (state[k]) {
+			if (state[k] !== null) {
 				deepSet(values, k, state[k]);
 			}
 		});
