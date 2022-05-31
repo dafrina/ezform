@@ -119,7 +119,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		if (!hasErrors) {
 			const values = {};
 
-			Object.keys(fields).forEach((k) => {
+			Object.keys(fieldsRef.current).forEach((k) => {
 				if (fields[k] !== null) {
 					if (submitUnmountedFields || mounted[k]) {
 						deepSet(values, k, fields[k]);
