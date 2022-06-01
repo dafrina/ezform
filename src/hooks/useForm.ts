@@ -80,11 +80,11 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	}, [initialState]);
 
 	const hasError = (name: string) => {
-		return !!errors[name];
+		return !!errorsRef.current[name];
 	};
 
 	const hasErrors = () => {
-		return Object.values(errorsRef)
+		return Object.values(errorsRef.current)
 			.map(e => !!e)
 			.filter(b => b)
 			.length > 0;
