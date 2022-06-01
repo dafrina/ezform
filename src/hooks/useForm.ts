@@ -80,7 +80,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	}, [initialState]);
 
 	const hasError = (name: string) => {
-		return !!errorsRef.current[name];
+		return !!errors[name];
 	};
 
 	const hasErrors = () => {
@@ -91,8 +91,8 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	};
 
 	const getHelperText = (name: string) => {
-		if (errorsRef.current[name]) {
-			return errorsRef.current[name];
+		if (errors[name]) {
+			return errors[name];
 		}
 		return null;
 	};
