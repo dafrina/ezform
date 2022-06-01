@@ -65,8 +65,12 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	const [validators, setValidators] = useState({} as ValidatorValues);
 	const validatorsRef = useRef(validators);
 	const fieldsRef = useRef(fields);
+	const mountedRef = useRef(mounted);
+	const errorsRef = useRef(errors);
 	validatorsRef.current = validators;
 	fieldsRef.current = fields;
+	mountedRef.current = mounted;
+	errorsRef.current = errors;
 	const [validateNow, setValidateNow] = useState(false);
 
 	useEffect(() => {
@@ -80,15 +84,15 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	};
 
 	const hasErrors = () => {
-		return Object.values(errors)
+		return Object.values(errorsRef)
 			.map(e => !!e)
 			.filter(b => b)
 			.length > 0;
 	};
 
 	const getHelperText = (name: string) => {
-		if (errors[name]) {
-			return errors[name];
+		if (errorsRef.current[name]) {
+			return errorsRef.current[name];
 		}
 		return null;
 	};
@@ -113,16 +117,16 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		const hasErrors = validateFields();
 
 		if (logging.logFields) {
-			console.log("Form fields", fields);
+			console.log("Form fields", fieldsRef.current);
 		}
 
 		if (!hasErrors) {
 			const values = {};
 
-			Object.keys(fieldsRef.current).forEach((k) => {
-				if (fields[k] !== null) {
-					if (submitUnmountedFields || mounted[k]) {
-						deepSet(values, k, fields[k]);
+			Object.entries(fieldsRef.current).forEach(([k, value]) => {
+				if (value !== null) {
+					if (submitUnmountedFields || mountedRef.current[k]) {
+						deepSet(values, k, value);
 					}
 				}
 			});
@@ -141,7 +145,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	};
 
 	const getField = (name: string) => {
-		return fields?.[name];
+		return fieldsRef.current?.[name];
 	};
 
 	const setField = (name: string, value: FieldType, validateImmediately = true) => {
@@ -183,11 +187,11 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	}, [validatorsRef.current]);
 
 	return {
-		getFields: getNestedState(fields),
+		getFields: getNestedState(fieldsRef.current),
 		setFields: fieldsSetter,
 		getField,
 		setField,
-		getErrors: getNestedState(errors),
+		getErrors: getNestedState(errorsRef.current),
 		setErrors,
 		hasError,
 		hasErrors,
@@ -195,7 +199,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		reset,
 		getHelperText,
 		formatMessage,
-		getValidators: getNestedState(validators),
+		getValidators: getNestedState(validatorsRef.current),
 		setValidators,
 		setMounted,
 		isReadonly,
