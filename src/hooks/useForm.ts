@@ -145,7 +145,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 	};
 
 	const getField = (name: string) => {
-		return fieldsRef.current?.[name];
+		return fields?.[name];
 	};
 
 	const setField = (name: string, value: FieldType, validateImmediately = true) => {
