@@ -7,9 +7,9 @@ export const deepGet = (obj: any, path: string) => {
 	for (let i = 0; i < length; i++) {
 		const key = keys[i];
 		if (key.includes("[")) {
-			obj = obj[parseInt(key.substring(1, key.length - 1))];
+			obj = obj?.[parseInt(key.substring(1, key.length - 1))];
 		} else {
-			obj = obj[keys[i]];
+			obj = obj?.[keys[i]];
 		}
 	}
 	return obj;
