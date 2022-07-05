@@ -72,8 +72,9 @@ The `useForm` hook returns a `FormRefObject` which contains the following proper
 - submit: () => void (validates all form fields and calls the onSubmit function passed to the useForm hook)
 - reset: () => void (clears all form fields and resets the errors)
 - getHelperText: (fieldName: string) => string
-- formatMessage?: (messageKey: string) => string;
+- formatMessage?: (messageKey: string) => string
 - isReadonly?: boolean (indicates if the form is readonly)
+- validate: () => boolean (Validate all fields and returns true if the form has errors)
 
 > Please note: the examples shown use @ezform/mui form components. [Click here](https://github.com/dafrina/ezform-mui) to use ezform with the Material UI form components.
 
@@ -197,7 +198,7 @@ You may want to integrate EZForm into your project without having to use [@ezfor
 All EZForm needs to work, is for your component to:
 
 - accept a `name`, `form` and `validator` prop
-- call the `useField` hook and pass the `name`, `validator` and `form` as function arguments
+- call the `useField` hook and pass the `name`, `validator` and `form` as function arguments. You can optionally pass a fourth argument to provide a default value which sets the field value on mount.
 - implement a `handleChange` function which modifies the form field by calling `ezform.setField(name, value, validateImmediately);`. Notice that you need to pass the `name` prop to let EZForm know which field you are changing as well as the `value` of the form field. You can optionally instruct EZForm to validate the field after a change. If you don't pass the `validateImmediately` argument, it will default to `true`.
 
 Here is a minimal example on how to create your own text input with validation ability:

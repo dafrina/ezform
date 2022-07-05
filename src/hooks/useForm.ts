@@ -41,6 +41,7 @@ export interface FormRefObject {
 	setValidators: Dispatch<SetStateAction<ValidatorValues>>;
 	setMounted: Dispatch<SetStateAction<MountedValues>>;
 	isReadonly: boolean;
+	validate: () => boolean;
 }
 
 export interface FormConfig {
@@ -203,5 +204,6 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		setValidators,
 		setMounted,
 		isReadonly,
+		validate: validateFields,
 	};
 };
