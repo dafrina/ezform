@@ -14,8 +14,6 @@ export const useField = (name: string, validator: (value: string) => string | nu
 			form.setValidators((prev) => ({ ...prev, [name]: null }));
 			form.setErrors((prev) => ({ ...prev, [name]: null }));
 			form.setMounted((prev) => ({ ...prev, [name]: false }));
-
-			if (hasDefaultValue) form.setField(name, null, false);
 		};
 	}, []);
 };
