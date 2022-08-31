@@ -61,20 +61,19 @@ const ezform = useForm({
 The `useForm` hook returns a `FormRefObject` which contains the following properties/methods:
 
 - getFields: (object containing all form fields with its values, returns a nested object)
-- setFields: (setterFunction: default setter function for the form fields state, validateImmediately?: boolean (default false) (note that setting this to true validates all form fields))
+- setFields: (setterFunction: default setter function for the form fields state)
 - setField: (name: string, value: any, validateImmediately?: boolean (default true))
 - getField: (name: string)
 - getErrors: (object containing all form fields with its error messages or null, returns a nested object)
 - setErrors: (default setter function for the form errors state)
 - hasError: (fieldName: string) => boolean
-- getValidators: (object containing all currently registered validators, returns a nested object);
-- setValidators: (default setter function for the validators state)
+- validatorsRef: (ref object containing all currently registered validators);
 - submit: () => void (validates all form fields and calls the onSubmit function passed to the useForm hook)
 - reset: () => void (clears all form fields and resets the errors)
 - getHelperText: (fieldName: string) => string
 - formatMessage?: (messageKey: string) => string
 - isReadonly?: boolean (indicates if the form is readonly)
-- validate: () => boolean (Validate all fields and returns true if the form has errors)
+- validate: () => boolean (Validate all fields and returns if the form has errors)
 
 > Please note: the examples shown use @ezform/mui form components. [Click here](https://github.com/dafrina/ezform-mui) to use ezform with the Material UI form components.
 

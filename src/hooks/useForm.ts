@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {Dispatch, RefObject, SetStateAction, useEffect, useRef, useState} from "react";
 import { EzformConfig } from "../config";
 import { deepSet, flatten } from "../utils";
 
@@ -37,8 +37,7 @@ export interface FormRefObject {
 	reset: () => void;
 	getHelperText: (name: string) => string | null;
 	formatMessage?: FormatMessageType;
-	getValidators: () => ValidatorValues;
-	setValidators: Dispatch<SetStateAction<ValidatorValues>>;
+	validatorsRef: RefObject<ValidatorValues>;
 	setMounted: Dispatch<SetStateAction<MountedValues>>;
 	isReadonly: boolean;
 	validate: () => boolean;
@@ -57,22 +56,18 @@ export interface FormConfig {
 }
 
 export const useForm = (props: FormConfig): FormRefObject => {
-
 	const {onSubmit, initialState, formatMessage, submitUnmountedFields, isReadonly, logging} = {...EzformConfig(), ...props};
 
 	const [fields, setFields] = useState(flatten(initialState) as FieldValues);
 	const [mounted, setMounted] = useState({} as MountedValues);
 	const [errors, setErrors] = useState({} as ErrorValues);
-	const [validators, setValidators] = useState({} as ValidatorValues);
-	const validatorsRef = useRef(validators);
+	const validatorsRef = useRef({} as ValidatorValues);
 	const fieldsRef = useRef(fields);
 	const mountedRef = useRef(mounted);
 	const errorsRef = useRef(errors);
-	validatorsRef.current = validators;
 	fieldsRef.current = fields;
 	mountedRef.current = mounted;
 	errorsRef.current = errors;
-	const [validateNow, setValidateNow] = useState(false);
 
 	useEffect(() => {
 		if (initialState) {
@@ -98,13 +93,16 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		return null;
 	};
 
-	const validateFields = () => Object.keys(validatorsRef.current)
+	const validateFields = () => Object.keys(mountedRef.current)
 		.map((v) => {
 			if (validatorsRef.current[v]) {
 				const value = fieldsRef.current?.[v];
 				const validatorResult = validatorsRef.current[v](value, formatMessage);
 				setErrors((prev) => ({ ...prev, [v]: validatorResult }));
 				return validatorResult;
+			} else {
+				setErrors((prev) => ({ ...prev, [v]: null }));
+				return null;
 			}
 		})
 		.filter((v) => v).length > 0;
@@ -161,7 +159,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		}
 	};
 
-	const getNestedState = (state: any) => () => {
+	const getNestedState = (state) => () => {
 		const values = {};
 
 		Object.keys(state).forEach((k) => {
@@ -173,19 +171,9 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		return values;
 	};
 
-	const fieldsSetter = (setterFunction: (prevState: FieldValues) => FieldValues, validateImmediately?: boolean) => {
+	const fieldsSetter = (setterFunction: (prevState: FieldValues) => FieldValues) => {
 		setFields((prevState) => flatten(setterFunction(getNestedState(prevState)())));
-		if (validateImmediately) {
-			setValidateNow(true);
-		}
 	};
-
-	useEffect(() => {
-		if (validateNow) {
-			validateFields();
-			setValidateNow(false);
-		}
-	}, [validatorsRef.current]);
 
 	return {
 		getFields: getNestedState(fieldsRef.current),
@@ -200,8 +188,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		reset,
 		getHelperText,
 		formatMessage,
-		getValidators: getNestedState(validatorsRef.current),
-		setValidators,
+		validatorsRef,
 		setMounted,
 		isReadonly,
 		validate: validateFields,

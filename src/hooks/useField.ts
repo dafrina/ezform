@@ -5,13 +5,16 @@ export const useField = (name: string, validator: (value: string) => string | nu
 	const hasDefaultValue = defaultValue !== null && typeof defaultValue !== "undefined";
 
 	useEffect(() => {
-		form.setValidators((prev) => ({ ...prev, [name]: validator }));
+		form.validatorsRef.current[name] = validator;
+	}, [validator]);
+
+	useEffect(() => {
 		form.setMounted((prev) => ({ ...prev, [name]: true }));
 
 		if (hasDefaultValue) form.setField(name, defaultValue, false);
 
 		return () => {
-			form.setValidators((prev) => ({ ...prev, [name]: null }));
+			form.validatorsRef.current[name] = null;
 			form.setErrors((prev) => ({ ...prev, [name]: null }));
 			form.setMounted((prev) => ({ ...prev, [name]: false }));
 		};
