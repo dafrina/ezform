@@ -126,12 +126,12 @@ The global config can be overridden in the config for each individual form.
 
 ## Validators
 
-EZForm works with pure functions as validators and each `Field` component can take an optional `validator` prop. The function takes one argument which is the `value` that the field holds. The only requirement for this function is, that it returns a `string` with an error message in case the input failed the validation, or `null` when the validation was successful.
+EZForm works with pure functions as validators and each `Field` component can take an optional `validator` prop. The function takes one argument which is the `value` that the field holds and a `fields` argument which consists of all the forms current field values. The only requirement for this function is, that it returns a `string` with an error message in case the input failed the validation, or `null` when the validation was successful.
 
 This means you can pass any function that follows these requirements:
 
 ````
-const customValidator = (value: any) => {
+const customValidator = (value: any, fields: FieldValues) => {
     if (value === "SomeCondition") {
         return "This is your error text!";
     }
@@ -139,10 +139,10 @@ const customValidator = (value: any) => {
 }
 ````
 
-If you configured `useForm` for use with translations, your validator can also accept a second parameter:
+If you configured `useForm` for use with translations, your validator can also accept a third parameter:
 
 ````
-const customValidatorWithTranslation = (value: any, formatMessage?: (messageKey: string) => string) => {
+const customValidatorWithTranslation = (value: any, fields: FieldValues, formatMessage?: (messageKey: string) => string) => {
     if (value === "SomeCondition") {
         return formatMessage ? formatMessage("translation_key") : "Fallback error text!";
     }

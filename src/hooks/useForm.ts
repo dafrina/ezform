@@ -6,7 +6,7 @@ export type FieldType = any | null;
 export type MountedType = boolean | null;
 export type ErrorType = string | null;
 export type FormatMessageType = (messageKey: string) => string;
-export type ValidatorType = (value: FieldType, formatMessage?: FormatMessageType) => string | null;
+export type ValidatorType = (value: FieldType, fields: FieldValues, formatMessage?: FormatMessageType) => string | null;
 
 interface FieldValues {
 	[key: string]: FieldType;
@@ -26,7 +26,7 @@ interface ValidatorValues {
 
 export interface FormRefObject {
 	getFields: () => FieldValues;
-	setFields: (setterFunction: (prevState: FieldValues) => FieldValues, validateImmediately?: boolean) => void;
+	setFields: (setterFunction: (prevState: FieldValues) => FieldValues) => void;
 	getField: (name: string) => FieldType;
 	setField: (name: string, value: FieldType, validateImmediately?: boolean) => void;
 	getErrors: () => ErrorValues;
@@ -97,7 +97,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		.map((v) => {
 			if (validatorsRef.current[v]) {
 				const value = fieldsRef.current?.[v];
-				const validatorResult = validatorsRef.current[v](value, formatMessage);
+				const validatorResult = validatorsRef.current[v](value, fieldsRef.current, formatMessage);
 				setErrors((prev) => ({ ...prev, [v]: validatorResult }));
 				return validatorResult;
 			} else {
