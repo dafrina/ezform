@@ -55,7 +55,7 @@ export const fileValidator: ValidatorType = (value, fields, formatMessage) => {
 export const combinedValidator = (validators: ValidatorType[]): ValidatorType => (value, fields, formatMessage) => {
 	let re = null;
 	for (let i = 0; i < validators.length; i++) {
-		re = validators[i](value, formatMessage);
+		re = validators[i](value, fields, formatMessage);
 		if (re) {
 			return re;
 		}

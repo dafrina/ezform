@@ -152,7 +152,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		const validator = validatorsRef.current[name];
 
 		if (validateImmediately && validator) {
-			const validatorResult = validator(value, formatMessage);
+			const validatorResult = validator(value, fieldsRef.current, formatMessage);
 
 			setErrors((prev) => ({ ...prev, [name]: validatorResult }));
 		}
