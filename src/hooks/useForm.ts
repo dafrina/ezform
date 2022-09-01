@@ -5,22 +5,21 @@ import { deepSet, flatten } from "../utils";
 export type FieldType = any | null;
 export type MountedType = boolean | null;
 export type ErrorType = string | null;
-export type FormatMessageType = (messageKey: string) => string;
-export type ValidatorType = (value: FieldType, fields: FieldValues, formatMessage?: FormatMessageType) => string | null;
+export type ValidatorType = (value: FieldType, fields: FieldValues, formatMessage?: any) => string | null;
 
-interface FieldValues {
+export interface FieldValues {
 	[key: string]: FieldType;
 }
 
-interface MountedValues {
+export interface MountedValues {
 	[key: string]: MountedType;
 }
 
-interface ErrorValues {
+export interface ErrorValues {
 	[key: string]: ErrorType;
 }
 
-interface ValidatorValues {
+export interface ValidatorValues {
 	[key: string]: ValidatorType;
 }
 
@@ -36,7 +35,7 @@ export interface FormRefObject {
 	submit: () => void;
 	reset: () => void;
 	getHelperText: (name: string) => string | null;
-	formatMessage?: FormatMessageType;
+	formatMessage?: any;
 	validatorsRef: RefObject<ValidatorValues>;
 	setMounted: Dispatch<SetStateAction<MountedValues>>;
 	isReadonly: boolean;
@@ -46,7 +45,7 @@ export interface FormRefObject {
 export interface FormConfig {
 	onSubmit: (values: FieldValues) => void;
 	initialState?: FieldValues;
-	formatMessage?: FormatMessageType;
+	formatMessage?: any;
 	submitUnmountedFields?: boolean;
 	isReadonly?: boolean;
 	logging?: {
