@@ -3,6 +3,7 @@ import {FieldType, FormRefObject, ValidatorType} from "./useForm";
 
 export const useField = (name: string, validator: ValidatorType, form: FormRefObject, defaultValue?: FieldType) => {
 	const hasDefaultValue = defaultValue !== null && typeof defaultValue !== "undefined";
+	const hasFieldValue = form.getField(name);
 
 	useEffect(() => {
 		form.validatorsRef.current[name] = validator;
@@ -11,7 +12,7 @@ export const useField = (name: string, validator: ValidatorType, form: FormRefOb
 	useEffect(() => {
 		form.setMounted((prev) => ({ ...prev, [name]: true }));
 
-		if (hasDefaultValue) form.setField(name, defaultValue, false);
+		if (hasDefaultValue && !hasFieldValue) form.setField(name, defaultValue, false);
 
 		return () => {
 			form.validatorsRef.current[name] = null;
