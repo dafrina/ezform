@@ -68,7 +68,7 @@ The `useForm` hook returns a `FormRefObject` which contains the following proper
 - setErrors: (default setter function for the form errors state)
 - hasError: (fieldName: string) => boolean
 - validatorsRef: (ref object containing all currently registered validators);
-- submit: () => void (validates all form fields and calls the onSubmit function passed to the useForm hook)
+- submit: (validate?: boolean) => void (submit the form, validate defaults to true if not passed)
 - reset: () => void (clears all form fields and resets the errors)
 - getHelperText: (fieldName: string) => string
 - formatMessage?: (messageKey: string) => string

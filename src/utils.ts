@@ -43,13 +43,17 @@ export const deepSet = (obj: any, path: string, val: any) => {
 
 export const flatten = (obj: any, result = {}, key = "") => {
 	if (Array.isArray(obj)) {
-		obj.forEach((d,i) => {
-			if (typeof d === "string" || !isNaN(d)) {
-				result[key] = obj;
-			} else {
-				result = flatten(d, result, key + `[${i}]`);
-			}
-		});
+		if (obj.length > 0) {
+			obj.forEach((d, i) => {
+				if (typeof d === "string" || !isNaN(d)) {
+					result[key] = obj;
+				} else {
+					result = flatten(d, result, key + `[${i}]`);
+				}
+			});
+		} else {
+			result = [];
+		}
 	}
 	else if (obj && typeof obj === "object" && !isObjectEmpty(obj)) {
 		for (const i of Object.keys(obj)) {

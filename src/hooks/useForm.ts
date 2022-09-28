@@ -32,7 +32,7 @@ export interface FormRefObject {
 	setErrors: Dispatch<SetStateAction<ErrorValues>>;
 	hasError: (name: string) => boolean;
 	hasErrors: () => boolean;
-	submit: () => void;
+	submit: (validate?: boolean) => void;
 	reset: () => void;
 	getHelperText: (name: string) => string | null;
 	formatMessage?: any;
@@ -106,16 +106,19 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		})
 		.filter((v) => v).length > 0;
 
-	const submit = () => {
+	const submit = (validate = true) => {
 		if (isReadonly) {
 			console.warn("Submission is not allowed on readonly forms!");
 			return;
 		}
 
-		const hasErrors = validateFields();
-
 		if (logging.logFields) {
 			console.log("Form fields", fieldsRef.current);
+		}
+
+		let hasErrors = false;
+		if (validate) {
+			hasErrors = validateFields();
 		}
 
 		if (!hasErrors) {
