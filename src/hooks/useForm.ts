@@ -1,66 +1,30 @@
-import {Dispatch, RefObject, SetStateAction, useEffect, useRef, useState} from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { EzformConfig } from "../config";
-import { deepSet, flatten } from "../utils";
+import { deepSet, flatten, unflatten } from "../utils";
+import {
+	ErrorValues,
+	FieldType,
+	FieldValues,
+	IFormConfig,
+	IFormRefObject,
+	MountedValues,
+	ValidatorValues
+} from "./types";
 
-export type FieldType = any | null;
-export type MountedType = boolean | null;
-export type ErrorType = string | null;
-export type ValidatorType = (value: FieldType, fields: FieldValues, formatMessage?: any) => string | null;
+export const useForm = <T>(props: IFormConfig<T>): IFormRefObject<T> => {
+	const {
+		onSubmit,
+		initialState,
+		formatMessage,
+		submitUnmountedFields,
+		isReadonly,
+		logging
+	}: IFormConfig<T> = { ...EzformConfig(), ...props };
 
-export interface FieldValues {
-	[key: string]: FieldType;
-}
-
-export interface MountedValues {
-	[key: string]: MountedType;
-}
-
-export interface ErrorValues {
-	[key: string]: ErrorType;
-}
-
-export interface ValidatorValues {
-	[key: string]: ValidatorType;
-}
-
-export interface FormRefObject {
-	getFields: () => FieldValues;
-	setFields: (setterFunction: (prevState: FieldValues) => FieldValues) => void;
-	getField: (name: string) => FieldType;
-	setField: (name: string, value: FieldType, validateImmediately?: boolean) => void;
-	getErrors: () => ErrorValues;
-	setErrors: Dispatch<SetStateAction<ErrorValues>>;
-	hasError: (name: string) => boolean;
-	hasErrors: () => boolean;
-	submit: (validate?: boolean) => void;
-	reset: () => void;
-	getHelperText: (name: string) => string | null;
-	formatMessage?: any;
-	validatorsRef: RefObject<ValidatorValues>;
-	setMounted: Dispatch<SetStateAction<MountedValues>>;
-	isReadonly: boolean;
-	validate: () => boolean;
-}
-
-export interface FormConfig {
-	onSubmit: (values: FieldValues) => void;
-	initialState?: FieldValues;
-	formatMessage?: any;
-	submitUnmountedFields?: boolean;
-	isReadonly?: boolean;
-	logging?: {
-		warnOnErrors: boolean,
-		logFields: boolean,
-	}
-}
-
-export const useForm = (props: FormConfig): FormRefObject => {
-	const {onSubmit, initialState, formatMessage, submitUnmountedFields, isReadonly, logging} = {...EzformConfig(), ...props};
-
-	const [fields, setFields] = useState(flatten(initialState) as FieldValues);
-	const [mounted, setMounted] = useState({} as MountedValues);
-	const [errors, setErrors] = useState({} as ErrorValues);
-	const validatorsRef = useRef({} as ValidatorValues);
+	const [fields, setFields] = useState<FieldValues>(flatten(initialState));
+	const [mounted, setMounted] = useState<MountedValues>({});
+	const [errors, setErrors] = useState<ErrorValues>({});
+	const validatorsRef = useRef<ValidatorValues>({});
 	const fieldsRef = useRef(fields);
 	const mountedRef = useRef(mounted);
 	const errorsRef = useRef(errors);
@@ -70,7 +34,9 @@ export const useForm = (props: FormConfig): FormRefObject => {
 
 	useEffect(() => {
 		if (initialState) {
-			setFields((prevState: FieldValues) => (Object.assign(prevState, flatten(initialState))));
+			setFields((prevState: FieldValues) =>
+				Object.assign(prevState, flatten(initialState))
+			);
 		}
 	}, [initialState]);
 
@@ -80,8 +46,8 @@ export const useForm = (props: FormConfig): FormRefObject => {
 
 	const hasErrors = () => {
 		return Object.values(errorsRef.current)
-			.map(e => !!e)
-			.filter(b => b)
+			.map((e) => !!e)
+			.filter((b) => b)
 			.length > 0;
 	};
 
@@ -92,28 +58,40 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		return null;
 	};
 
-	const validateFields = () => Object.keys(mountedRef.current)
-		.map((v) => {
-			if (validatorsRef.current[v]) {
-				const value = fieldsRef.current?.[v];
-				const validatorResult = validatorsRef.current[v](value, fieldsRef.current, formatMessage);
-				setErrors((prev) => ({ ...prev, [v]: validatorResult }));
-				return validatorResult;
-			} else {
-				setErrors((prev) => ({ ...prev, [v]: null }));
-				return null;
-			}
-		})
-		.filter((v) => v).length > 0;
+	const validateFields = () => {
+		const result =
+			Object.keys(mountedRef.current)
+				.map((v) => {
+					if (validatorsRef.current[v]) {
+						const value = fieldsRef.current?.[v];
+						const validatorResult = validatorsRef.current[v](
+							value,
+							fieldsRef.current,
+							formatMessage
+						);
+						errorsRef.current = { ...errorsRef.current, [v]: validatorResult };
+						return validatorResult;
+					} else {
+						errorsRef.current = { ...errorsRef.current, [v]: null };
+						return null;
+					}
+				})
+				.filter((v) => v).length > 0;
+
+		setErrors(errorsRef.current);
+		return result;
+	};
 
 	const submit = (validate = true) => {
-		if (isReadonly) {
-			console.warn("Submission is not allowed on readonly forms!");
-			return;
+		if (logging?.logFields) {
+			console.log("Form fields", unflatten(fieldsRef.current));
 		}
 
-		if (logging.logFields) {
-			console.log("Form fields", fieldsRef.current);
+		if (isReadonly) {
+			if (logging?.logFields) {
+				console.warn("Submission is not allowed on readonly forms!");
+			}
+			return;
 		}
 
 		let hasErrors = false;
@@ -134,8 +112,14 @@ export const useForm = (props: FormConfig): FormRefObject => {
 
 			onSubmit(values);
 		} else {
-			if (logging.warnOnErrors) {
-				console.warn("The form contains errors. Form not submitted");
+			if (logging?.warnOnErrors) {
+				console.warn(
+					"Form not submitted. The form contains errors:\n\n" +
+					Object.keys(errorsRef.current)
+						.filter((e) => !!errorsRef.current[e])
+						.map((e) => `${e.padEnd(20)} ${errorsRef.current[e]}`)
+						.join("\n")
+				);
 			}
 		}
 	};
@@ -149,40 +133,40 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		return fields?.[name];
 	};
 
-	const setField = (name: string, value: FieldType, validateImmediately = true) => {
+	const setField = (
+		name: string,
+		value: FieldType,
+		validateImmediately = true
+	) => {
 		setFields((prev) => ({ ...prev, [name]: value }));
 
 		const validator = validatorsRef.current[name];
 
 		if (validateImmediately && validator) {
-			const validatorResult = validator(value, fieldsRef.current, formatMessage);
+			const validatorResult = validator(
+				value,
+				fieldsRef.current,
+				formatMessage
+			);
 
 			setErrors((prev) => ({ ...prev, [name]: validatorResult }));
 		}
 	};
 
-	const getNestedState = (state) => () => {
-		const values = {};
-
-		Object.keys(state).forEach((k) => {
-			if (state[k] !== null) {
-				deepSet(values, k, state[k]);
-			}
-		});
-
-		return values;
-	};
-
-	const fieldsSetter = (setterFunction: (prevState: FieldValues) => FieldValues) => {
-		setFields((prevState) => flatten(setterFunction(getNestedState(prevState)())));
+	const fieldsSetter = (value: SetStateAction<T>) => {
+		if (value instanceof Function) {
+			setFields((prevState) => flatten(value(unflatten(prevState) as T)));
+		} else {
+			setFields(value);
+		}
 	};
 
 	return {
-		getFields: getNestedState(fieldsRef.current),
+		getFields: () => unflatten(fieldsRef.current),
 		setFields: fieldsSetter,
 		getField,
 		setField,
-		getErrors: getNestedState(errorsRef.current),
+		getErrors: () => unflatten(errorsRef.current),
 		setErrors,
 		hasError,
 		hasErrors,
@@ -192,7 +176,7 @@ export const useForm = (props: FormConfig): FormRefObject => {
 		formatMessage,
 		validatorsRef,
 		setMounted,
-		isReadonly,
-		validate: validateFields,
+		isReadonly: isReadonly || false,
+		validate: validateFields
 	};
 };

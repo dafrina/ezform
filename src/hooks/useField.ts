@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import {FieldType, FormRefObject, ValidatorType} from "./useForm";
+import {FieldType, FormRefObject, ValidatorType} from "./types";
 
 export const useField = (name: string, validator: ValidatorType, form: FormRefObject, defaultValue?: FieldType) => {
 	const hasDefaultValue = defaultValue !== null && typeof defaultValue !== "undefined";

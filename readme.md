@@ -99,7 +99,7 @@ You can create fully dynamic forms. Specify an object path to define fields:
 In order to submit the form, call the submit function returned by the hook:
 
 ````
-<button onClick={ezform.submit}>Submit</button>
+<button onClick={() => ezform.submit()}>Submit</button>
 ````
 
 ## Global Config

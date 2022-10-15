@@ -16,6 +16,8 @@ export const deepGet = (obj: any, path: string) => {
 };
 
 export const deepSet = (obj: any, path: string, val: any) => {
+	if (!val || val === "") return;
+
 	path = path.replaceAll("[", ".[");
 	const keys = path.split(".");
 
@@ -28,11 +30,8 @@ export const deepSet = (obj: any, path: string, val: any) => {
 		if (nextKey && nextKey.includes("[")) {
 			nextKey = parseInt(nextKey.substring(1, nextKey.length - 1));
 		}
-		if (currentKey === "") {
-			continue;
-		}
 		if (typeof nextKey !== "undefined") {
-			obj[currentKey] = obj[currentKey] ? obj[currentKey] : (isNaN(nextKey) ? {} : []);
+			obj[currentKey] = obj[currentKey] ? obj[currentKey] : isNaN(nextKey) ? {} : [];
 		} else {
 			obj[currentKey] = val;
 		}
@@ -52,21 +51,31 @@ export const flatten = (obj: any, result = {}, key = "") => {
 				}
 			});
 		} else {
-			result = [];
+			result[key] = [];
 		}
-	}
-	else if (obj && typeof obj === "object" && !isObjectEmpty(obj)) {
+	} else if (obj && typeof obj === "object" && !isObjectEmpty(obj)) {
 		for (const i of Object.keys(obj)) {
 			result = flatten(obj[i], result, key ? key + `.${i}` : `${i}`);
 		}
-	}
-	else {
+	} else {
 		result[key] = obj;
 	}
 	return result;
 };
 
-export const shallowEqual = (object1: any, object2: any) => {
+export const unflatten = (obj: any) => {
+	const values = {};
+
+	Object.keys(obj).forEach((k) => {
+		if (obj[k] !== null) {
+			deepSet(values, k, obj[k]);
+		}
+	});
+
+	return values;
+};
+
+export const deepEquals = (object1: any, object2: any) => {
 	const ignoreProps = ["form", "validator"];
 
 	const keys1 = Object.keys(object1);
@@ -89,7 +98,7 @@ export const propsEqual = (prev: any, next: any) => {
 		eq = false;
 	} else {
 		eq =
-			shallowEqual(prev, next) &&
+			deepEquals(prev, next) &&
 			prev.form.getField(prev.name) === next.form.getField(prev.name);
 	}
 	return eq;

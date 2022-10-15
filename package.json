@@ -1,6 +1,6 @@
 {
   "name": "@ezform/core",
-  "version": "3.0.7",
+  "version": "4.0.0",
   "description": "EZForm is an easy form and field-level validation library for react",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
