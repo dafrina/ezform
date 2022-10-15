@@ -157,7 +157,7 @@ export const useForm = <T>(props: IFormConfig<T>): IFormRefObject<T> => {
 		if (value instanceof Function) {
 			setFields((prevState) => flatten(value(unflatten(prevState) as T)));
 		} else {
-			setFields(value);
+			setFields(flatten(value));
 		}
 	};
 
