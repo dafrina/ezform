@@ -16,7 +16,7 @@ export const deepGet = (obj: any, path: string) => {
 };
 
 export const deepSet = (obj: any, path: string, val: any) => {
-	if (!val || val === "") return;
+	if (typeof val === "undefined" || val === null || val === "") return;
 
 	path = path.replaceAll("[", ".[");
 	const keys = path.split(".");
