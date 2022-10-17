@@ -1,4 +1,4 @@
-import {FormConfig} from "./types";
+import {FormConfig} from "./hooks/useForm";
 
 const _config: Partial<FormConfig> = {
 	initialState: {},
