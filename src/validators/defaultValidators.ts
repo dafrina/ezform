@@ -1,4 +1,4 @@
-import {FieldType, ValidatorType} from "../hooks";
+import {ValidatorType} from "../types";
 
 export const requiredValidator: ValidatorType = (value, fields, formatMessage) => {
 	if (!value || value === "") {

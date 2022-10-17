@@ -9,7 +9,7 @@ import {
 	IFormRefObject,
 	MountedValues,
 	ValidatorValues
-} from "./types";
+} from "../types";
 
 export const useForm = <T>(props: IFormConfig<T>): IFormRefObject<T> => {
 	const {
