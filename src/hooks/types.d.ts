@@ -48,7 +48,7 @@ export interface FormRefObject {
 }
 
 export interface IFormRefObject<T> extends FormRefObject {
-	setFields: Dispatch<SetStateAction<T>>;
+	setFields: Dispatch<SetStateAction<Partial<T>>>;
 }
 
 export interface FormConfig {
@@ -65,5 +65,5 @@ export interface FormConfig {
 
 export interface IFormConfig<T> extends FormConfig {
 	onSubmit: (values: Partial<T>) => void;
-	initialState?: T;
+	initialState?: Partial<T>;
 }

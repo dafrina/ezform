@@ -153,9 +153,9 @@ export const useForm = <T>(props: IFormConfig<T>): IFormRefObject<T> => {
 		}
 	};
 
-	const fieldsSetter = (value: SetStateAction<T>) => {
+	const fieldsSetter = (value: SetStateAction<Partial<T>>) => {
 		if (value instanceof Function) {
-			setFields((prevState) => flatten(value(unflatten(prevState) as T)));
+			setFields((prevState) => flatten(value(unflatten(prevState) as Partial<T>)));
 		} else {
 			setFields(flatten(value));
 		}
