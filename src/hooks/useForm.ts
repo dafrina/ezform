@@ -71,7 +71,7 @@ export interface IFormConfig<T> extends FormConfig {
 }
 
 
-export const useForm = <T>(props: IFormConfig<T>): IFormRefObject<T> => {
+export const useForm = <T = any>(props: IFormConfig<T>): IFormRefObject<T> => {
 	const {
 		onSubmit,
 		initialState,
