@@ -16,8 +16,6 @@ export const deepGet = (obj: any, path: string) => {
 };
 
 export const deepSet = (obj: any, path: string, val: any) => {
-	if (typeof val === "undefined" || val === null || val === "") return;
-
 	path = path.replaceAll("[", ".[");
 	const keys = path.split(".");
 
@@ -40,7 +38,7 @@ export const deepSet = (obj: any, path: string, val: any) => {
 	}
 };
 
-export const flatten = (obj: any, result = {}, key = "") => {
+export const flatten = (obj: any, result: any = {}, key?: string) => {
 	if (Array.isArray(obj)) {
 		if (obj.length > 0) {
 			obj.forEach((d, i) => {
@@ -57,7 +55,7 @@ export const flatten = (obj: any, result = {}, key = "") => {
 		for (const i of Object.keys(obj)) {
 			result = flatten(obj[i], result, key ? key + `.${i}` : `${i}`);
 		}
-	} else {
+	} else if (obj && key) {
 		result[key] = obj;
 	}
 	return result;
