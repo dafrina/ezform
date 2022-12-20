@@ -55,7 +55,7 @@ export const flatten = (obj: any, result: any = {}, key?: string) => {
 		for (const i of Object.keys(obj)) {
 			result = flatten(obj[i], result, key ? key + `.${i}` : `${i}`);
 		}
-	} else if (obj && key) {
+	} else if (key) {
 		result[key] = obj;
 	}
 	return result;
